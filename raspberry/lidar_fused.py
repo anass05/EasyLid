@@ -258,7 +258,7 @@ class Lidar(Thread):
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
         print('Ultrason %d' % (ULT_AG))
-        if i % 10 = 0:
+        if i%10 == 0:
          outputFile.write(''.join(str(x) for x in scan))
          outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
          outputFile.write('\n')
