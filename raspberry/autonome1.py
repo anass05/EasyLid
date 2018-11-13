@@ -63,11 +63,8 @@ class MySend(Thread):
     detectObstacleAD = False
     detectObstacleAG = False
     detectObstacleAC = False
-    detectObstacleACproche = False
-    differentiel = False
     distanceDetectObstacleAD = 10
     distanceDetectObstacleAG = 10
-    distanceDetectObstacleACproche = 10
     distanceDetectObstacleAC = 150
 	
     def __init__(self, bus):
@@ -113,57 +110,23 @@ class MySend(Thread):
                 message = "URC:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacleAC and distance > 0:
                     MySend.detectObstacleAC = True
-                elif distance<MySend.distanceDetectObstacleACproche and distance > 0:
-                    MySend.detectObstacleACproche = True
                 else: MySend.detectObstacleAC = False
                 
                 MySend.detectObstacleOld = MySend.detectObstacle
                 MySend.detectObstacle = MySend.detectObstacleAC #pour l'instant on regarde que les obstacles en face
-                
-            elif msg.arbitration_id == MS:
-                # position volant
-                position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
-                message = "POS:" + str(position_volant)+ ";"
-                print(message)
 
-            # detection obstacle lointain avec ultrason avant centre; dans ce cas on tourne à droite   
-            if MySend.detectObstacle and not(MySend.detectObstacleAG) and not(MySend.detectObstacleAD) and not(MySend.detectObstacleACproche):
-                self.move = 1
-                self.enable = 1
-                differentiel = False
-                if ( MySend.detectObstacle == MySend.detectObstacleOld ): #checke que c'est une valeur plausible et pas juste une erreur de passage
-                    self.move = 1
-                    self.enable = 1
-                    differentiel = True
-                    if (position_volant > 1350):
-                        self.turn = -1
-                    else:
-                        self.turn = 0
-            # detection obstacle proche dans ce cas on s'arrête 
-            elif MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleACproche:
+            # detection obstacle
+            if MySend.detectObstacle:
                 self.move = 0
                 self.enable = 0
-            # si pas d'obstacle on vas tout droit
             else:
                 self.move = 1
                 self.enable = 1
-                differentiel = False
-                # permet de "rester droit"
-                if (position_volant < 1600):
-                    self.turn = 1
-                elif (position_volant > 1700):
-                    self.turn = -1
-                else:
-                    self.turn = 0
 
             #calcul des commandes de mouvement        
             if self.enable:
-                if differentiel :
-                    cmd_mv_droit = (50 - self.move*self.speed_cmd - 10) | 0x80   #marche arrière
-                    cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
-                else:
-                    cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
-                    cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
+                cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
+                cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
                 cmd_turn = 50 + self.turn*20 | 0x80
             else:
                 cmd_mv_droit = (50 + self.move*self.speed_cmd) & ~0x80
