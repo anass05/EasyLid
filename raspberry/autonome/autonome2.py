@@ -1,4 +1,6 @@
 # coding: utf-8
+import sys
+sys.path.insert(0,'../can')
 from threading import Thread
 import time
 import can
