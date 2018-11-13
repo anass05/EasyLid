@@ -212,8 +212,8 @@ class Lidar(Thread):
     for i, scan in enumerate(self.lidar.iter_scans()):
       if self.shutdown_flag.is_set():
         print('please wait, lidar is shuting down')
+        outputFile.close()
         break
-    elif
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
         print('Ultrason %d' % (ULT_AG))
