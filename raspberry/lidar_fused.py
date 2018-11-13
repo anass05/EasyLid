@@ -142,13 +142,15 @@ class MySend(Thread):
                 message = "URC:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacleAC and distance > MySend.distanceDetectObstacleACproche:
                     MySend.detectObstacleAC = True
+                    MySend.detectObstacleACproche= False
                 elif distance<MySend.distanceDetectObstacleACproche and distance > 0:
                     MySend.detectObstacleACproche = True
+                    MySend.detectObstacleAC = False
                 elif distance == 0:
                     None 
                 else:
                     MySend.detectObstacleAC = False
-                    MySend.detectObstacleACproche = True
+                    MySend.detectObstacleACproche = False
                     
             elif msg.arbitration_id == US2:
                 
@@ -256,9 +258,10 @@ class Lidar(Thread):
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
         print('Ultrason %d' % (ULT_AG))
-        outputFile.write(''.join(str(x) for x in scan))
-        outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
-        outputFile.write('\n')
+        if i % 10 = 0:
+         outputFile.write(''.join(str(x) for x in scan))
+         outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
+         outputFile.write('\n')
 
 lidar = RPLidar('/dev/ttyUSB0')
 
