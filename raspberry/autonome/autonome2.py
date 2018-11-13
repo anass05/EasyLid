@@ -64,7 +64,7 @@ class MySend(Thread):
         
     def run(self):
         
-        self.speed_cmd = 50
+        self.speed_cmd = 10
         self.move = 0
         self.turn = 0
         self.enable = 0
@@ -80,23 +80,23 @@ class MySend(Thread):
             if msg.arbitration_id == US1:
                 # ultrason avant gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
-                print(distance)
+               #print(distance)
                 message = "UFL:" + str(distance) + ";"
                 print(distance)
-                if distance < 100:
+                if distance < 100 and distance > 0:
                     MySend.detectObstacle=True
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
                 print(distance)
-                if distance < 100:
+                if distance < 100 and distance > 0:
                     MySend.detectObstacle=True
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
                 print(distance)
                 print("------------------")
-                if distance < 100:
+                if distance < 100 and distance > 0:
                     MySend.detectObstacle=True
             '''elif msg.arbitration_id == US2:
                 # ultrason arriere gauche
@@ -128,9 +128,9 @@ class MySend(Thread):
             if MySend.detectObstacle:
                 self.move = 0
                 self.enable = 0
-                print("send cmd move stop")
+                #print("send cmd move stop")
             else:
-                print("send cmd move forward")
+               #print("send cmd move forward")
                 self.move = 1
                 self.enable = 1
 
