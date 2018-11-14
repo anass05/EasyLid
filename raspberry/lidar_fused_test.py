@@ -1,14 +1,14 @@
 #Lidar Imports
-import sys
-#sys.path.insert(0,'../lidar')
 from rplidar import RPLidar
 import time
-
+import sys
 import signal
 from threading import Thread
 import threading
+import lidar
 
 #Can imports
+#sys.path.insert(0,'../../can')
 import can
 import os
 import struct
@@ -23,7 +23,7 @@ US2 = 0x001
 OM1 = 0x101
 OM2 = 0x102
 
-ULT_AG = 0
+
 '''
     Messages envoyés :
     - ultrason avant gauche
@@ -79,7 +79,6 @@ class MySend(Thread):
     def __init__(self, bus):
         Thread.__init__(self)
         self.bus = bus
-        self.shutdown_flag = threading.Event()
     
     def run(self):
         
@@ -88,7 +87,7 @@ class MySend(Thread):
         self.turn = 0
         self.enable = 0
         
-        while not self.shutdown_flag.is_set() :
+        while True :
             
             msg = self.bus.recv()
             
@@ -103,10 +102,8 @@ class MySend(Thread):
                 
                 # ultrason avant gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
-                global ULT_AG
-                ULT_AG = distance
-                message = "UFL:" + str(distance)+ ";"
-                if distance < MySend.distanceDetectObstacleAG and distance > 0:
+                message = "UFL:" + str(distance) + ";"
+                if distance < MySend.distanceDetectObstacleAG:
                     MySend.detectObstacleAG=True
                 else: MySend.detectObstacleAG=False
                 print(message)
@@ -114,7 +111,7 @@ class MySend(Thread):
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
-                if distance < MySend.distanceDetectObstacleAD and distance > 0:
+                if distance < MySend.distanceDetectObstacleAD:
                     MySend.detectObstacleAD = True
                 else: MySend.detectObstacleAD = False
                 print(message)
@@ -122,9 +119,9 @@ class MySend(Thread):
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
-                if distance < MySend.distanceDetectObstacleACproche and distance > 0:
+                if distance < MySend.distanceDetectObstacleACproche:
                     MySend.detectObstacleACproche = True
-                elif distance<MySend.distanceDetectObstacleAC and distance > 0:
+                elif distance<MySend.distanceDetectObstacleAC:
                     MySend.detectObstacleAC = True
                 else:
                     MySend.detectObstacleAC = False
@@ -210,32 +207,16 @@ class Lidar(Thread):
       if self.shutdown_flag.is_set():
         print('please wait, lidar is shuting down')
         break
-    elif
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
-        print('Ultrason %d' % (ULT_AG))
 
 lidar = RPLidar('/dev/ttyUSB0')
 
 threadLidar=Lidar(lidar)
 
-print('Bring up CAN0....')
-os.system("sudo /sbin/ip link set can0 down")
-os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
-time.sleep(0.1)
-
-try:
- bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
-except OSError:
- print('Cannot find PiCAN board.')
- exit()
-
-newsend = MySend(bus)
 def signal_handler(sig, frame):
   print('You pressed Ctrl+C!')
   threadLidar.shutdown_flag.set()
-  newsend.shutdown_flag.set()
-  os.system("cansend can0 010#00000000")
   time.sleep(5)
   lidar.stop()
   lidar.stop_motor()
@@ -245,16 +226,26 @@ def signal_handler(sig, frame):
 
 
 
-
 if __name__ == "__main__":
-
+    print('Bring up CAN0....')
+    os.system("sudo /sbin/ip link set can0 down")
+    os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
+    time.sleep(0.1)
     
     threadLidar.start()
     signal.signal(signal.SIGINT, signal_handler)
     print('Press Ctrl+C')
     
+    try:
+        bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+    except OSError:
+        print('Cannot find PiCAN board.')
+        exit()
+
+
+
+    newsend = MySend(bus)
     newsend.start()
 
-    
-    threadLidar.join()
     newsend.join()
+    threadLidar.join()
