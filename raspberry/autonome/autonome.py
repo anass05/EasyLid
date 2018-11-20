@@ -67,8 +67,8 @@ class MySend(Thread):
         while True :
             msg = self.bus.recv()
 
-           # print(msg.arbitration_id, msg.data)
-           print("Reading")
+            print(msg.arbitration_id, msg.data)
+          # print("Reading")
            
             st = ""
 
