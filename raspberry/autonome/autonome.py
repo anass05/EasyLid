@@ -67,7 +67,9 @@ class MySend(Thread):
         while True :
             msg = self.bus.recv()
 
-            print(msg.arbitration_id, msg.data)
+           # print(msg.arbitration_id, msg.data)
+           print("Reading")
+           
             st = ""
 
             if msg.arbitration_id == US1:
