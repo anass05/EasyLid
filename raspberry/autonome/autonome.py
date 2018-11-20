@@ -56,11 +56,13 @@ OM2 = 0x102
 
 class MySend(Thread):
 
+    detectObstacle = False 
+    
     def __init__(self,conn, bus):
         Thread.__init__(self)
         self.conn = conn
         self.bus = bus
-
+        
     def run(self):
         while True :
             msg = self.bus.recv()
@@ -74,11 +76,15 @@ class MySend(Thread):
                 message = "UFL:" + str(distance) + ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
+                if distance < 100:
+                    detectObstacle=True
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
+                if distance < 100:
+                    detectObstacle=True
                 # ultrason arriere centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
@@ -100,6 +106,8 @@ class MySend(Thread):
                 message = "UFC:" + str(distance)+ ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
+                if distance < 100:
+                    detectObstacle=True
             elif msg.arbitration_id == MS:
                 # position volant
                 angle = int.from_bytes(msg.data[0:2], byteorder='big')
@@ -142,6 +150,19 @@ class MySend(Thread):
                 #st += message
                 size = self.conn.send(message.encode())
                 if size == 0: break
+
+
+            if detectObstacle:
+                self.move = 0
+                self.enable = 0
+                print("send cmd move stop")
+                
+            if self.enable:
+                cmd_mv = (50 + self.move*self.speed_cmd) | 0x80
+                cmd_turn = 50 + self.turn*20 | 0x80
+            else:
+                cmd_mv = (50 + self.move*self.speed_cmd) & ~0x80
+                cmd_turn = 50 + self.turn*20 & 0x80   
 
             #if (st!=""):print(st)
 
