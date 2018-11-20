@@ -75,6 +75,7 @@ class MySend(Thread):
             if msg.arbitration_id == US1:
                 # ultrason avant gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
+                print(distance)
                 message = "UFL:" + str(distance) + ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
