@@ -64,6 +64,12 @@ class MySend(Thread):
         self.bus = bus
         
     def run(self):
+        
+        self.speed_cmd = 0
+        self.move = 0
+        self.turn = 0
+        self.enable = 0
+        
         while True :
             msg = self.bus.recv()
 
