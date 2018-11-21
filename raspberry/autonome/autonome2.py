@@ -64,7 +64,7 @@ class MySend(Thread):
         
     def run(self):
         
-        self.speed_cmd = 0
+        self.speed_cmd = 50
         self.move = 0
         self.turn = 0
         self.enable = 0
@@ -82,19 +82,23 @@ class MySend(Thread):
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
                 print(distance)
                 message = "UFL:" + str(distance) + ";"
+                print(distance)
                 if distance < 100:
                     MySend.detectObstacle=True
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
+                print(distance)
                 if distance < 100:
                     MySend.detectObstacle=True
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
+                print(distance)
+                print("------------------")
                 if distance < 100:
                     MySend.detectObstacle=True
-            elif msg.arbitration_id == US2:
+            '''elif msg.arbitration_id == US2:
                 # ultrason arriere gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
                 message = "URL:" + str(distance)+ ";"
@@ -117,21 +121,8 @@ class MySend(Thread):
                 # vitesse roue droite
                 # header : SWR payload : entier, *0.01rpm
                 speed_right= int.from_bytes(msg.data[6:8], byteorder='big')
-                message = "SWR:" + str(speed_right)+ ";"
-            elif msg.arbitration_id == OM1:
-                # Yaw
-                yaw = struct.unpack('>f',msg.data[0:4])
-                message = "YAW:" + str(yaw[0])+ ";"
-                #st += message
-                # Pitch
-                pitch = struct.unpack('>f',msg.data[4:8])
-                message = "PIT:" + str(pitch[0])+ ";"
-                #st += message
-            elif msg.arbitration_id == OM2:
-                # Roll
-                roll = struct.unpack('>f',msg.data[0:4])
-                message = "ROL:" + str(roll[0])+ ";"
-                #st += message
+                message = "SWR:" + str(speed_right)+ ";"'''
+
 
 
             if MySend.detectObstacle:
@@ -154,7 +145,7 @@ class MySend(Thread):
             #if (st!=""):print(st)
 
             msg = can.Message(arbitration_id=MCM,data=[cmd_mv, cmd_mv, cmd_turn,0,0,0,0,0],extended_id=False)
-            print(msg)
+            #print(msg)
             self.bus.send(msg)
 
 
