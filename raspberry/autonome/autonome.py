@@ -165,6 +165,11 @@ class MySend(Thread):
                 self.move = 0
                 self.enable = 0
                 print("send cmd move stop")
+            else:
+                print("send cmd move forward")
+                self.move = 1
+                self.enable = 1
+
                 
             if self.enable:
                 cmd_mv = (50 + self.move*self.speed_cmd) | 0x80
@@ -264,6 +269,7 @@ import socket
 if __name__ == "__main__":
 
     print('Bring up CAN0....')
+    os.system("sudo /sbin/ip link set can0 down")
     os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
     time.sleep(0.1)
 
