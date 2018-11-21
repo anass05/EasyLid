@@ -243,56 +243,60 @@ int main(void)
         {
             US_Flag=0;
 
-            /* US_AV_G D_Trig ; US_AV_D_Trig ; US_AR_C_Trig */
+            /* US_AV_G D_Trig ; US_AV_D_Trig ; US_AV_C_Trig */
+
             //pulse quelques 10 aines de us
-            HAL_GPIO_WritePin( US_AV_G_Trig_GPIO_Port, US_AV_G_Trig_Pin, GPIO_PIN_SET); //PC0	: US_AV_G_Trig � 1
+            HAL_GPIO_WritePin( US_AV_G_Trig_GPIO_Port, US_AV_G_Trig_Pin, GPIO_PIN_SET); //PC0 : US_AV_G_Trig � 1
             HAL_GPIO_WritePin( US_AV_D_Trig_GPIO_Port, US_AV_D_Trig_Pin, GPIO_PIN_SET); //PC2 : US_AV_D_Trig � 1
-            HAL_GPIO_WritePin( US_AR_C_Trig_GPIO_Port, US_AR_C_Trig_Pin, GPIO_PIN_SET); //PC4 : US_AR_C_Trig � 1
+            HAL_GPIO_WritePin( US_AV_C_Trig_GPIO_Port, US_AV_C_Trig_Pin, GPIO_PIN_SET); //PC4 : US_AV_C_Trig � 1
             //HAL_Delay(1); //10µs
             SYS_MicroDelay(10); // 10µs
             HAL_GPIO_WritePin( US_AV_G_Trig_GPIO_Port, US_AV_G_Trig_Pin, GPIO_PIN_RESET); //PC0	: US_AV_G_Trig � 0
             HAL_GPIO_WritePin( US_AV_D_Trig_GPIO_Port, US_AV_D_Trig_Pin, GPIO_PIN_RESET); //PC2 : US_AV_D_Trig � 0
-            HAL_GPIO_WritePin( US_AR_C_Trig_GPIO_Port, US_AR_C_Trig_Pin, GPIO_PIN_RESET); //PC4 : US_AR_C_Trig � 0
+            HAL_GPIO_WritePin( US_AV_C_Trig_GPIO_Port, US_AV_C_Trig_Pin, GPIO_PIN_RESET); //PC4 : US_AV_C_Trig � 0
             HAL_Delay(30); // 30ms
 
             US_AV_G_mes = US_G_Echo/58;
             US_AV_D_mes = US_D_Echo/58;
-            US_AR_C_mes = US_C_Echo/58;
+            US_AV_C_mes = US_C_Echo/58;
 
             CAN_US_mes[0] = (US_AV_G_mes >> 8) & 0xFF;
 			CAN_US_mes[1] = US_AV_G_mes & 0xFF;
 			CAN_US_mes[2] = (US_AV_D_mes >> 8) & 0xFF;
 			CAN_US_mes[3] = US_AV_D_mes & 0xFF;
-			CAN_US_mes[4] = (US_AR_C_mes >> 8) & 0xFF;
-			CAN_US_mes[5] = US_AR_C_mes & 0xFF;
+			CAN_US_mes[4] = (US_AV_C_mes >> 8) & 0xFF;
+			CAN_US_mes[5] = US_AV_C_mes & 0xFF;
 			CAN_Send(CAN_US_mes, CAN_US1_id);
 
-            /* US_AV_C_Trig ; US_AR_G_Trig ; US_AR_D_Trig */
+			/* US_AR_G_Trig ; US_AR_D_Trig ; US_AR_C_Trig */
             //pulse quelques 10 aines de us
-            HAL_GPIO_WritePin( US_AV_C_Trig_GPIO_Port, US_AV_C_Trig_Pin, GPIO_PIN_SET); // PC1 : US_AV_C_Trig � 1
-            HAL_GPIO_WritePin( US_AR_G_Trig_GPIO_Port, US_AR_G_Trig_Pin, GPIO_PIN_SET); // PC3 : US_AR_G_Trig � 1
-            HAL_GPIO_WritePin( US_AR_D_Trig_GPIO_Port, US_AR_D_Trig_Pin, GPIO_PIN_SET); // PC5 : US_AR_D_Trig � 1
+        	HAL_GPIO_WritePin( US_AR_G_Trig_GPIO_Port, US_AR_G_Trig_Pin, GPIO_PIN_SET); // PC1 : US_AR_G_Trig � 1
+        	HAL_GPIO_WritePin( US_AR_D_Trig_GPIO_Port, US_AR_D_Trig_Pin, GPIO_PIN_SET); // PC3 : US_AR_D_Trig � 1
+        	HAL_GPIO_WritePin( US_AR_C_Trig_GPIO_Port, US_AR_C_Trig_Pin, GPIO_PIN_SET); // PC5 : US_AR_C_Trig � 1
+
             //HAL_Delay(1); //10µs
             SYS_MicroDelay(10); // 10µs
-            HAL_GPIO_WritePin( US_AR_D_Trig_GPIO_Port, US_AR_D_Trig_Pin, GPIO_PIN_RESET); // PC1 : US_AV_C_Trig � 0
-            HAL_GPIO_WritePin( US_AR_G_Trig_GPIO_Port, US_AR_G_Trig_Pin, GPIO_PIN_RESET); // PC3 : US_AR_G_Trig � 0
-            HAL_GPIO_WritePin( US_AV_C_Trig_GPIO_Port, US_AV_C_Trig_Pin, GPIO_PIN_RESET); // PC5 : US_AR_D_Trig � 0
+            HAL_GPIO_WritePin( US_AR_G_Trig_GPIO_Port, US_AR_G_Trig_Pin, GPIO_PIN_RESET);  // PC1 : US_AR_G_Trig � 1
+            HAL_GPIO_WritePin( US_AR_D_Trig_GPIO_Port, US_AR_D_Trig_Pin, GPIO_PIN_RESET); // PC3 : US_AR_D_Trig � 0
+            HAL_GPIO_WritePin( US_AR_C_Trig_GPIO_Port, US_AR_C_Trig_Pin, GPIO_PIN_RESET); // PC5 : US_AR_C_Trig � 1
             HAL_Delay(30); // 30ms
 
             US_AR_G_mes = US_G_Echo/58;
             US_AR_D_mes = US_D_Echo/58;
-            US_AV_C_mes = US_C_Echo/58;
+            US_AR_C_mes = US_C_Echo/58;
 
             CAN_US_mes[0] = (US_AR_G_mes >> 8) & 0xFF;
 			CAN_US_mes[1] = US_AR_G_mes & 0xFF;
 			CAN_US_mes[2] = (US_AR_D_mes >> 8) & 0xFF;
 			CAN_US_mes[3] = US_AR_D_mes & 0xFF;
-			CAN_US_mes[4] = (US_AV_C_mes >> 8) & 0xFF;
-			CAN_US_mes[5] = US_AV_C_mes & 0xFF;
+			CAN_US_mes[4] = (US_AR_C_mes >> 8) & 0xFF;
+			CAN_US_mes[5] = US_AR_C_mes & 0xFF;
 			CAN_Send(CAN_US_mes, CAN_US2_id);
 
             // TODO: Revoir le delai de 1 seconde
             // HAL_Delay(100000);
+
+
         }
         /* USER CODE END WHILE */
 
@@ -353,12 +357,12 @@ void HAL_SYSTICK_Callback()
     counter++;
     counterAHRS++;
 
-    if (counterAHRS>=500){
+    if (counterAHRS>=1000){ // 1 sec infos pitch yam roll
         counterAHRS=0;
         AHRS_Flag=1;
     }
 
-    if (counter>=1000) {
+    if (counter>=100) { // 100 ms between ultrasons
         counter=0;
         US_Flag=1;
     }
