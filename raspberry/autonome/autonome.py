@@ -80,19 +80,21 @@ class MySend(Thread):
                 size = self.conn.send(message.encode())
                 if size == 0: break
                 if distance < 100:
-                    detectObstacle=True
+                    MySend.detectObstacle=True
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
                 if distance < 100:
-                    detectObstacle=True
-                # ultrason arriere centre
+                    MySend.detectObstacle=True
+                # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
+                if distance < 100:
+                    MySend.detectObstacle=True
             elif msg.arbitration_id == US2:
                 # ultrason arriere gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
@@ -104,13 +106,11 @@ class MySend(Thread):
                 message = "URR:" + str(distance)+ ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
-                # ultrason avant centre
+                # ultrason arriere centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "UFC:" + str(distance)+ ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
-                if distance < 100:
-                    detectObstacle=True
             elif msg.arbitration_id == MS:
                 # position volant
                 angle = int.from_bytes(msg.data[0:2], byteorder='big')
@@ -155,7 +155,7 @@ class MySend(Thread):
                 if size == 0: break
 
 
-            if detectObstacle:
+            if MySend.detectObstacle:
                 self.move = 0
                 self.enable = 0
                 print("send cmd move stop")
