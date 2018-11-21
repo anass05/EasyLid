@@ -57,6 +57,9 @@ OM2 = 0x102
 class MySend(Thread):
 
     detectObstacle = False 
+    detectObstacleAD = False
+    detectObstacleAG = False
+    detectObstacleAC = False
     
     def __init__(self, bus):
         Thread.__init__(self)
@@ -84,21 +87,25 @@ class MySend(Thread):
                 message = "UFL:" + str(distance) + ";"
                 print(distance)
                 if distance < 100 and distance > 0:
-                    MySend.detectObstacle=True
-                # ultrason avant droit
+                    MySend.detectObstacleAG=True
+                else: MySend.detectObstacleAG=False
+                    # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
                 print(distance)
                 if distance < 100 and distance > 0:
-                    MySend.detectObstacle=True
+                    MySend.detectObstacleAD=True
+                else: MySend.detectObstacleAD=False
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
                 print(distance)
                 print("------------------")
                 if distance < 100 and distance > 0:
-                    MySend.detectObstacle=True
-            '''elif msg.arbitration_id == US2:
+                    MySend.detectObstacleAC=True
+                else: MySend.detectObstacleAC=False
+
+                '''elif msg.arbitration_id == US2:
                 # ultrason arriere gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
                 message = "URL:" + str(distance)+ ";"
@@ -124,6 +131,7 @@ class MySend(Thread):
                 message = "SWR:" + str(speed_right)+ ";"'''
 
 
+            MySend.detectObstacle = MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleAC  
 
             if MySend.detectObstacle:
                 self.move = 0
@@ -133,8 +141,7 @@ class MySend(Thread):
                #print("send cmd move forward")
                 self.move = 1
                 self.enable = 1
-
-                
+                         
             if self.enable:
                 cmd_mv = (50 + self.move*self.speed_cmd) | 0x80
                 cmd_turn = 50 + self.turn*20 | 0x80
