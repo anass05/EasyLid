@@ -85,8 +85,8 @@ class MySend(Thread):
                 message = "UFL:" + str(distance) + ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
-                if distance < 100:
-                    MySend.detectObstacle=True
+                #if distance < 100:
+                    #MySend.detectObstacle=True
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
@@ -99,8 +99,8 @@ class MySend(Thread):
                 message = "URC:" + str(distance)+ ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
-                if distance < 100:
-                    MySend.detectObstacle=True
+                #if distance < 100:
+                    #MySend.detectObstacle=True
             elif msg.arbitration_id == US2:
                 # ultrason arriere gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
@@ -193,7 +193,7 @@ class MyReceive(Thread):
         self.enable = 0
 
     def run(self):
-        self.speed_cmd = 0
+        self.speed_cmd = 50
         self.move = 0
         self.turn = 0
         self.enable = 0
