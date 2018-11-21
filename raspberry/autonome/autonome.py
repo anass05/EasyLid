@@ -73,7 +73,7 @@ class MySend(Thread):
         while True :
             msg = self.bus.recv()
 
-            print(msg.arbitration_id, msg.data)
+          # print(msg.arbitration_id, msg.data)
           # print("Reading")
            
             st = ""
@@ -85,8 +85,8 @@ class MySend(Thread):
                 message = "UFL:" + str(distance) + ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
-                #if distance < 100:
-                    #MySend.detectObstacle=True
+                if distance < 100:
+                    MySend.detectObstacle=True
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
@@ -99,8 +99,8 @@ class MySend(Thread):
                 message = "URC:" + str(distance)+ ";"
                 size = self.conn.send(message.encode())
                 if size == 0: break
-                #if distance < 100:
-                    #MySend.detectObstacle=True
+                if distance < 100:
+                    MySend.detectObstacle=True
             elif msg.arbitration_id == US2:
                 # ultrason arriere gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
@@ -281,7 +281,7 @@ if __name__ == "__main__":
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
-    s.listen(1)
+    #s.listen(1)
     conn, addr = s.accept()
     print('Connected by', addr)
 
