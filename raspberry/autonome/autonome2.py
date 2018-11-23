@@ -133,19 +133,17 @@ class MySend(Thread):
                 # header : SWR payload : entier, *0.01rpm
                 speed_right= int.from_bytes(msg.data[6:8], byteorder='big')
                 message = "SWR:" + str(speed_right)+ ";"'''
-
-
                 MySend.detectObstacleOld = MySend.detectObstacle
-	        MySend.detectObstacle = MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleAC  
+                MySend.detectObstacle = MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleAC  
 
             if MySend.detectObstacle:
                 self.move = 0
                 self.enable = 0
                 #print("send cmd move stop")
-		if ( MySend.detectObstacle == MySend.detectObstacleOld ):
-		    self.move=1
-		    self.enable =1
-		    self.turn = -1
+                if ( MySend.detectObstacle == MySend.detectObstacleOld ):
+                    self.move=1
+                    self.enable =1
+                    self.turn = -1
 	    else:
                 #print("send cmd move forward")
                 self.move = 1
