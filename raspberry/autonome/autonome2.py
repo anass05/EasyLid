@@ -90,14 +90,14 @@ class MySend(Thread):
                #print(distance)
                 message = "UFL:" + str(distance) + ";"
                 print(distance)
-                if distance < distanceDetectObstacleAG and distance > 0:
+                if distance < MySend.distanceDetectObstacleAG and distance > 0:
                     MySend.detectObstacleAG=True
                 else: MySend.detectObstacleAG=False
                     # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
                 print(distance)
-                if distance < distanceDetectObstacleAD and distance > 0:
+                if distance < MySend.distanceDetectObstacleAD and distance > 0:
                     MySend.detectObstacleAD=True
                 else: MySend.detectObstacleAD=False
                 # ultrason avant centre
@@ -105,37 +105,17 @@ class MySend(Thread):
                 message = "URC:" + str(distance)+ ";"
                 print(distance)
                 print("------------------")
-                if distance < distanceDetectObstacleAC and distance > 0:
+                if distance < MySend.distanceDetectObstacleAC and distance > 0:
                     MySend.detectObstacleAC=True
                 else: MySend.detectObstacleAC=False
-
-                '''elif msg.arbitration_id == US2:
-                # ultrason arriere gauche
-                distance = int.from_bytes(msg.data[0:2], byteorder='big')
-                message = "URL:" + str(distance)+ ";"
-                # ultrason arriere droit
-                distance = int.from_bytes(msg.data[2:4], byteorder='big')
-                message = "URR:" + str(distance)+ ";"
-                # ultrason arriere centre
-                distance = int.from_bytes(msg.data[4:6], byteorder='big')
-                message = "UFC:" + str(distance)+ ";"
+                MySend.detectObstacleOld = MySend.detectObstacle
+                MySend.detectObstacle = MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleAC
+              
             elif msg.arbitration_id == MS:
                 # position volant
-                angle = int.from_bytes(msg.data[0:2], byteorder='big')
-                message = "POS:" + str(angle)+ ";"
-                # Niveau de la batterie
-                bat = int.from_bytes(msg.data[2:4], byteorder='big')
-                message = "BAT:" + str(bat)+ ";"
-                # vitesse roue gauche
-                speed_left = int.from_bytes(msg.data[4:6], byteorder='big')
-                message = "SWL:" + str(speed_left)+ ";"
-                # vitesse roue droite
-                # header : SWR payload : entier, *0.01rpm
-                speed_right= int.from_bytes(msg.data[6:8], byteorder='big')
-                message = "SWR:" + str(speed_right)+ ";"'''
-                MySend.detectObstacleOld = MySend.detectObstacle
-                MySend.detectObstacle = MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleAC  
-
+                position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
+                message = "POS:" + str(position_volant)+ ";"                
+                  
             if MySend.detectObstacle:
                 self.move = 0
                 self.enable = 0
@@ -144,7 +124,7 @@ class MySend(Thread):
                     self.move=1
                     self.enable =1
                     self.turn = -1
-            else:
+	    else:
                 #print("send cmd move forward")
                 self.move = 1
                 self.enable = 1         
