@@ -123,11 +123,20 @@ class MySend(Thread):
                 if ( MySend.detectObstacle == MySend.detectObstacleOld ):
                     self.move=1
                     self.enable =1
-                    self.turn = -1
+                    if (position_volant > 1830):
+                        self.turn = -1
+                    else:
+                        self.turn = 0
             else:
                 #print("send cmd move forward")
                 self.move = 1
-                self.enable = 1         
+                self.enable = 1
+                if (position_volant<2000):
+                    self.turn = 1
+                elif (position_volant>2100):
+                    self.turn = -1
+                else:
+                    self.turn = 0
             if self.enable:
                 cmd_mv = (50 + self.move*self.speed_cmd) | 0x80
                 cmd_turn = 50 + self.turn*20 | 0x80
