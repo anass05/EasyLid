@@ -89,22 +89,22 @@ class MySend(Thread):
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
                #print(distance)
                 message = "UFL:" + str(distance) + ";"
-                print(distance)
+                #print(distance)
                 if distance < MySend.distanceDetectObstacleAG and distance > 0:
                     MySend.detectObstacleAG=True
                 else: MySend.detectObstacleAG=False
                     # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
-                print(distance)
+                #print(distance)
                 if distance < MySend.distanceDetectObstacleAD and distance > 0:
                     MySend.detectObstacleAD=True
                 else: MySend.detectObstacleAD=False
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
-                print(distance)
-                print("------------------")
+                #print(distance)
+                #print("------------------")
                 if distance < MySend.distanceDetectObstacleAC and distance > 0:
                     MySend.detectObstacleAC=True
                 else: MySend.detectObstacleAC=False
@@ -114,7 +114,8 @@ class MySend(Thread):
             elif msg.arbitration_id == MS:
                 # position volant
                 position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
-                message = "POS:" + str(position_volant)+ ";"                
+                message = "POS:" + str(position_volant)+ ";"
+                print(message)
                   
             if MySend.detectObstacle:
                 self.move = 0
@@ -125,6 +126,7 @@ class MySend(Thread):
                     self.enable =1
                     if (position_volant > 1830):
                         self.turn = -1
+                        print("turn right detected")
                     else:
                         self.turn = 0
             else:
@@ -137,6 +139,8 @@ class MySend(Thread):
                     self.turn = -1
                 else:
                     self.turn = 0
+
+                    
             if self.enable:
                 cmd_mv = (50 + self.move*self.speed_cmd) | 0x80
                 cmd_turn = 50 + self.turn*20 | 0x80
