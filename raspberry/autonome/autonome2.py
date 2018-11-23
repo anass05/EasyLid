@@ -126,7 +126,7 @@ class MySend(Thread):
                 if ( MySend.detectObstacle == MySend.detectObstacleOld ):
                     self.move=1
                     self.enable =1
-                    if (position_volant > 1830):
+                    if (position_volant > 1340):
                         self.turn = -1
                         print("turn right detected")
                     else:
@@ -135,9 +135,9 @@ class MySend(Thread):
                 #print("send cmd move forward")
                 self.move = 1
                 self.enable = 1
-                if (position_volant<2000):
+                if (position_volant<1600):
                     self.turn = 1
-                elif (position_volant>2100):
+                elif (position_volant>1700):
                     self.turn = -1
                 else:
                     self.turn = 0
