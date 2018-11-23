@@ -71,7 +71,7 @@ class MySend(Thread):
         
     def run(self):
         
-        self.speed_cmd = 10
+        self.speed_cmd = 50
         self.move = 0
         self.turn = 0
         self.enable = 0
