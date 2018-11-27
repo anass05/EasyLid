@@ -63,9 +63,11 @@ class MySend(Thread):
     detectObstacleAD = False
     detectObstacleAG = False
     detectObstacleAC = False
+    detectObstacleACproche = False
     differentiel = False
     distanceDetectObstacleAD = 10
     distanceDetectObstacleAG = 10
+    distanceDetectObstacleACproche = 10
     distanceDetectObstacleAC = 200
     i = 0
 	
@@ -113,6 +115,8 @@ class MySend(Thread):
                 #print("------------------")
                 if distance < MySend.distanceDetectObstacleAC and distance > 0:
                     MySend.detectObstacleAC = True
+                elif distance<MySend.distanceDetectObstacleACproche:
+                    MySend.detectObstacleACproche = True
                 else: MySend.detectObstacleAC = False
                 MySend.detectObstacleOld = MySend.detectObstacle
                 #MySend.detectObstacle = MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleAC
@@ -124,7 +128,7 @@ class MySend(Thread):
                 message = "POS:" + str(position_volant)+ ";"
                 print(message)
                   
-            if MySend.detectObstacle:
+            if MySend.detectObstacle and not(MySend.detectObstacleAG) and not(MySend.detectObstacleAD) and not(MySend.detectObstacleACproche):
                 self.move = 1
                 self.enable = 1
                 differentiel = False
@@ -133,12 +137,12 @@ class MySend(Thread):
                     self.move = 1
                     self.enable = 1
                     differentiel = True
-                    if (position_volant > 1340):
+                    if (position_volant > 1350):
                         self.turn = -1
                         #print("turn right detected")
                     else:
                         self.turn = 0
-            elif MySend.detectObstacleAG or MySend.detectObstacleAD:
+            elif MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleACproche:
                 self.move = 0
                 self.enable = 0
             else:
@@ -146,9 +150,9 @@ class MySend(Thread):
                 self.move = 1
                 self.enable = 1
                 differentiel = False
-                if (position_volant<1600):
+                if (position_volant < 1600):
                     self.turn = 1
-                elif (position_volant>1700):
+                elif (position_volant > 1700):
                     self.turn = -1
                 else:
                     self.turn = 0
