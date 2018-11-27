@@ -64,7 +64,7 @@ class MySend(Thread):
     detectObstacleAG = False
     detectObstacleAC = False
     differentiel = False
-    distanceDetectObstacleAD = 100
+    distanceDetectObstacleAD = 50
     distanceDetectObstacleAG = 50
     distanceDetectObstacleAC = 200
 	
@@ -74,7 +74,7 @@ class MySend(Thread):
         
     def run(self):
         
-        self.speed_cmd = 10
+        self.speed_cmd = 50
         self.move = 0
         self.turn = 0
         self.enable = 0
@@ -112,8 +112,9 @@ class MySend(Thread):
                     MySend.detectObstacleAC=True
                 else: MySend.detectObstacleAC=False
                 MySend.detectObstacleOld = MySend.detectObstacle
-                MySend.detectObstacle = MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleAC
-              
+                #MySend.detectObstacle = MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleAC
+                MySend.detectObstacle = MySend.detectObstacleAC
+                
             elif msg.arbitration_id == MS:
                 # position volant
                 position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
