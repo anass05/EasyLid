@@ -162,7 +162,7 @@ class MySend(Thread):
 
             #if (st!=""):print(st)
 
-            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_droit, cmd_mv_gauche, cmd_turn,0,0,0,0,0],extended_id=False)
+            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             #print(msg)
             self.bus.send(msg)
 
