@@ -67,6 +67,7 @@ class MySend(Thread):
     distanceDetectObstacleAD = 50
     distanceDetectObstacleAG = 50
     distanceDetectObstacleAC = 200
+    i = 0
 	
     def __init__(self, bus):
         Thread.__init__(self)
@@ -84,6 +85,7 @@ class MySend(Thread):
 
           # print(msg.arbitration_id, msg.data)
           # print("Reading")
+          i++
            
             st = ""
 
@@ -106,7 +108,7 @@ class MySend(Thread):
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
-                #print(distance)
+                print(distance)
                 #print("------------------")
                 if distance < MySend.distanceDetectObstacleAC and distance > 0:
                     MySend.detectObstacleAC=True
@@ -119,7 +121,7 @@ class MySend(Thread):
                 # position volant
                 position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
                 message = "POS:" + str(position_volant)+ ";"
-                print(message)
+                #print(message)
                   
             if MySend.detectObstacle:
                 self.move = 1
@@ -132,7 +134,7 @@ class MySend(Thread):
                     differentiel = True
                     if (position_volant > 1340):
                         self.turn = -1
-                        print("turn right detected")
+                        #print("turn right detected")
                     else:
                         self.turn = 0
             else:
