@@ -156,7 +156,7 @@ class MySend(Thread):
                     
             if self.enable:
                 if differentiel :
-                    cmd_mv_droit = (50 - self.move*self.speed_cmd*120/100) | 0x80   #marche arrière
+                    cmd_mv_droit = (50 - self.move*self.speed_cmd - 10) | 0x80   #marche arrière
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
                 else:
                     cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
