@@ -63,6 +63,7 @@ class MySend(Thread):
     detectObstacleAD = False
     detectObstacleAG = False
     detectObstacleAC = False
+    differentiel = False
     distanceDetectObstacleAD = 100
     distanceDetectObstacleAG = 50
     distanceDetectObstacleAC = 200
@@ -120,12 +121,14 @@ class MySend(Thread):
                 print(message)
                   
             if MySend.detectObstacle:
-                self.move = 0
-                self.enable = 0
+                self.move = 1
+                self.enable = 1
+                differentiel = False
                 #print("send cmd move stop")
                 if ( MySend.detectObstacle == MySend.detectObstacleOld ):
-                    self.move=1
-                    self.enable =1
+                    self.move = 1
+                    self.enable = 1
+                    differentiel = True
                     if (position_volant > 1340):
                         self.turn = -1
                         print("turn right detected")
@@ -135,6 +138,7 @@ class MySend(Thread):
                 #print("send cmd move forward")
                 self.move = 1
                 self.enable = 1
+                differentiel = False
                 if (position_volant<1600):
                     self.turn = 1
                 elif (position_volant>1700):
@@ -144,15 +148,21 @@ class MySend(Thread):
 
                     
             if self.enable:
-                cmd_mv = (50 + self.move*self.speed_cmd) | 0x80
+                if differentiel :
+                    cmd_mv_droit = (50 - self.move*self.speed_cmd) | 0x80
+                    cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
+                else:
+                    cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
+                    cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
                 cmd_turn = 50 + self.turn*20 | 0x80
             else:
-                cmd_mv = (50 + self.move*self.speed_cmd) & ~0x80
+                cmd_mv_droit = (50 + self.move*self.speed_cmd) & ~0x80
+                cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
                 cmd_turn = 50 + self.turn*20 & 0x80   
 
             #if (st!=""):print(st)
 
-            msg = can.Message(arbitration_id=MCM,data=[cmd_mv, cmd_mv, cmd_turn,0,0,0,0,0],extended_id=False)
+            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_droit, cmd_mv_gauche, cmd_turn,0,0,0,0,0],extended_id=False)
             #print(msg)
             self.bus.send(msg)
 
