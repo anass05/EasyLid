@@ -64,8 +64,8 @@ class MySend(Thread):
     detectObstacleAG = False
     detectObstacleAC = False
     differentiel = False
-    distanceDetectObstacleAD = 50
-    distanceDetectObstacleAG = 50
+    distanceDetectObstacleAD = 10
+    distanceDetectObstacleAG = 10
     distanceDetectObstacleAC = 200
     i = 0
 	
@@ -75,7 +75,7 @@ class MySend(Thread):
         
     def run(self):
         
-        self.speed_cmd = 50
+        self.speed_cmd = 30
         self.move = 0
         self.turn = 0
         self.enable = 0
@@ -103,17 +103,17 @@ class MySend(Thread):
                 message = "UFR:" + str(distance)+ ";"
                 #print(distance)
                 if distance < MySend.distanceDetectObstacleAD and distance > 0:
-                    MySend.detectObstacleAD=True
-                else: MySend.detectObstacleAD=False
+                    MySend.detectObstacleAD = True
+                else: MySend.detectObstacleAD = False
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
-                if MySend.i%10 ==0:
-                    print('-> '+ str(distance))
+                #if MySend.i%10 ==0:
+                    #print('-> '+ str(distance))
                 #print("------------------")
                 if distance < MySend.distanceDetectObstacleAC and distance > 0:
-                    MySend.detectObstacleAC=True
-                else: MySend.detectObstacleAC=False
+                    MySend.detectObstacleAC = True
+                else: MySend.detectObstacleAC = False
                 MySend.detectObstacleOld = MySend.detectObstacle
                 #MySend.detectObstacle = MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleAC
                 MySend.detectObstacle = MySend.detectObstacleAC
@@ -122,7 +122,7 @@ class MySend(Thread):
                 # position volant
                 position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
                 message = "POS:" + str(position_volant)+ ";"
-                #print(message)
+                print(message)
                   
             if MySend.detectObstacle:
                 self.move = 1
@@ -138,6 +138,9 @@ class MySend(Thread):
                         #print("turn right detected")
                     else:
                         self.turn = 0
+            elif MySend.detectObstacleAG or MySend.detectObstacleAD:
+                self.move = 0
+                self.enable = 0
             else:
                 #print("send cmd move forward")
                 self.move = 1
@@ -153,7 +156,7 @@ class MySend(Thread):
                     
             if self.enable:
                 if differentiel :
-                    cmd_mv_droit = (50 - self.move*self.speed_cmd) | 0x80
+                    cmd_mv_droit = (50 - self.move*self.speed_cmd*120/100) | 0x80   #marche arrière
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
                 else:
                     cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
