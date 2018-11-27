@@ -85,7 +85,7 @@ class MySend(Thread):
 
           # print(msg.arbitration_id, msg.data)
           # print("Reading")
-            i = i+1
+            MySend.i=MySend.i+1
            
             st = ""
 
@@ -108,7 +108,7 @@ class MySend(Thread):
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "URC:" + str(distance)+ ";"
-                if i%100 ==0:
+                if MySend.i%100 ==0:
                     print(distance)
                 #print("------------------")
                 if distance < MySend.distanceDetectObstacleAC and distance > 0:
