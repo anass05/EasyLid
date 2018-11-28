@@ -25,7 +25,7 @@ class Lidar(Thread):
         print('%d: Got %d measurments' % (i, len(scan)))
 
 lidar = RPLidar('/dev/ttyUSB0')
-<<<<<<< HEAD
+
 threadLidar=Lidar(lidar)
 
 def signal_handler(sig, frame):
@@ -41,20 +41,3 @@ if __name__ == "__main__":
   signal.signal(signal.SIGINT, signal_handler)
   print('Press Ctrl+C')
   threadLidar.join()
-=======
-
-if __name__ == "__main__":  
-  threadLidar=Lidar(lidar)
-  threadLidar.start()
-  threadLidar.join()
-  signal.signal(signal.SIGINT, self.signal_handler)
-  print('Press Ctrl+C to stop')
-
-def signal_handler(sig, frame):
-  print('You pressed Ctrl+C!')
-  lidar.stop()
-  lidar.stop_motor()
-  lidar.disconnect()
-  sys.exit(0)
->>>>>>> 758e67dcba582ecf7a9c2b52c2043d5e9c5936b7
-
