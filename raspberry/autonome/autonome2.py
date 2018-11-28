@@ -119,8 +119,10 @@ class MySend(Thread):
                 message = "URC:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacleAC and distance > MySend.distanceDetectObstacleACproche:
                     MySend.detectObstacleAC = True
+                    MySend.detectObstacleACproche = False
                 elif distance<MySend.distanceDetectObstacleACproche and distance > 0:
                     MySend.detectObstacleACproche = True
+                    MySend.detectObstacleAC = False
                 elif distance == 0:
                     None 
                 else:
