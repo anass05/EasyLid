@@ -19,7 +19,7 @@ OM2 = 0x102
 
 
 '''
- Messages envoyés :
+    Messages envoyés :
     - ultrason avant gauche
     header : UFL payload : entier, distance en cm
     - ultrason avant centre
@@ -46,19 +46,19 @@ OM2 = 0x102
     header : YAW payload : float, angle en degrée
     - Roll
     header : ROL payload : float, angle en degrée
-
- Messages reçus :
+    
+    Messages reçus :
     - Modification de la vitesse
     header : SPE payload : valeur entre 0 et 50
     - Control du volant (droite, gauche)
     header : STE paylaod : left | right | stop
     - Contra l de l'avancée
     header : MOV payload : forward | backward | stop
-'''
+    '''
 
 class MySend(Thread):
-
-    detectObstacle = False 
+    
+    detectObstacle = False
     detectObstacleOld = False
     detectObstacleAD = False
     detectObstacleAG = False
@@ -66,11 +66,11 @@ class MySend(Thread):
     distanceDetectObstacleAD = 10
     distanceDetectObstacleAG = 10
     distanceDetectObstacleAC = 150
-	
+    
     def __init__(self, bus):
         Thread.__init__(self)
         self.bus = bus
-        
+    
     def run(self):
         
         self.speed_cmd = 30
@@ -81,14 +81,14 @@ class MySend(Thread):
         while True :
             
             msg = self.bus.recv()
-
-          # print(msg.arbitration_id, msg.data)
-          # print("Reading")
-
-
-           
+            
+            # print(msg.arbitration_id, msg.data)
+            # print("Reading")
+            
+            
+            
             st = ""
-
+            
             if msg.arbitration_id == US1:
                 
                 # ultrason avant gauche
@@ -98,23 +98,23 @@ class MySend(Thread):
                     MySend.detectObstacleAG=True
                 else: MySend.detectObstacleAG=False
                 
-                    # ultrason avant droit
+                # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacleAD and distance > 0:
                     MySend.detectObstacleAD = True
-                else: MySend.detectObstacleAD = False
-                
-                # ultrason avant centre
-                distance = int.from_bytes(msg.data[4:6], byteorder='big')
-                message = "URC:" + str(distance)+ ";"
-                if distance < MySend.distanceDetectObstacleAC and distance > 0:
-                    MySend.detectObstacleAC = True
+        else: MySend.detectObstacleAD = False
+            
+            # ultrason avant centre
+            distance = int.from_bytes(msg.data[4:6], byteorder='big')
+            message = "URC:" + str(distance)+ ";"
+            if distance < MySend.distanceDetectObstacleAC and distance > 0:
+                MySend.detectObstacleAC = True
                 else: MySend.detectObstacleAC = False
                 
                 MySend.detectObstacleOld = MySend.detectObstacle
                 MySend.detectObstacle = MySend.detectObstacleAC #pour l'instant on regarde que les obstacles en face
-
+            
             # detection obstacle
             if MySend.detectObstacle:
                 self.move = 0
@@ -122,19 +122,19 @@ class MySend(Thread):
             else:
                 self.move = 1
                 self.enable = 1
-
-            #calcul des commandes de mouvement        
-            if self.enable:
-                cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
-                cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
-                cmd_turn = 50 + self.turn*20 | 0x80
+        
+        #calcul des commandes de mouvement
+        if self.enable:
+            cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
+            cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
+            cmd_turn = 50 + self.turn*20 | 0x80
             else:
                 cmd_mv_droit = (50 + self.move*self.speed_cmd) & ~0x80
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
-                cmd_turn = 50 + self.turn*20 & 0x80   
-
+                cmd_turn = 50 + self.turn*20 & 0x80
+            
             #if (st!=""):print(st)
-
+            
             msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
 
@@ -144,12 +144,12 @@ class MySend(Thread):
 
 
 if __name__ == "__main__":
-
+    
     print('Bring up CAN0....')
     os.system("sudo /sbin/ip link set can0 down")
     os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
     time.sleep(0.1)
-
+    
     try:
         bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
     except OSError:
@@ -157,8 +157,8 @@ if __name__ == "__main__":
         exit()
 
 
-  
+
     newsend = MySend(bus)
     newsend.start()
 
-    newsend.join()
+newsend.join()
