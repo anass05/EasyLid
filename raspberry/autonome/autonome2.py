@@ -127,7 +127,7 @@ class MySend(Thread):
                 # position volant
                 position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
                 message = "POS:" + str(position_volant)+ ";"
-                print(message)
+                #print(message)
             
                 # detection obstacle lointain avec ultrason avant centre; dans ce cas on tourne à droite
                 if MySend.detectObstacle and not(MySend.detectObstacleAG) and not(MySend.detectObstacleAD) and not(MySend.detectObstacleACproche):
