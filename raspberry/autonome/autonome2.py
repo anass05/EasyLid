@@ -101,7 +101,8 @@ class MySend(Thread):
                     MySend.detectObstacleAG=True
                 elif distance == 0:
                     None
-                else: MySend.detectObstacleAG=False
+                else:
+                    MySend.detectObstacleAG=False
                 
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
@@ -110,7 +111,8 @@ class MySend(Thread):
                     MySend.detectObstacleAD = True
                 elif distance == 0:
                     None
-                else: MySend.detectObstacleAD = False
+                else:
+                    MySend.detectObstacleAD = False
             
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
@@ -121,8 +123,10 @@ class MySend(Thread):
                     MySend.detectObstacleACproche = True
                 elif distance == 0:
                     None 
-                else: MySend.detectObstacleAC = False
-            
+                else:
+                    MySend.detectObstacleAC = False
+                    MySend.detectObstacleACproche = True
+                    
             elif msg.arbitration_id == US2:
                 
                 # ultrason arriere gauche
