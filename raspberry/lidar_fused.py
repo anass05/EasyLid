@@ -7,6 +7,9 @@ import time
 import signal
 from threading import Thread
 import threading
+path = 'outputs/test1'
+outputFile = open(path,'w')
+
 
 #Can imports
 import can
@@ -209,11 +212,13 @@ class Lidar(Thread):
     for i, scan in enumerate(self.lidar.iter_scans()):
       if self.shutdown_flag.is_set():
         print('please wait, lidar is shuting down')
+        outputFile.close()
         break
-    elif
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
         print('Ultrason %d' % (ULT_AG))
+        outputFile.write(''.join(str(x) for x in scan))
+        outputFile.write('\n')
 
 lidar = RPLidar('/dev/ttyUSB0')
 
