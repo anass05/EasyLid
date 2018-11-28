@@ -26,7 +26,14 @@ US2 = 0x001
 OM1 = 0x101
 OM2 = 0x102
 
+#global ultrasound variables
 ULT_AG = 0
+ULT_AD = 0
+ULT_AC = 0
+ULT_DG = 0
+ULT_DD = 0
+ULT_DC = 0
+
 '''
     Messages envoyés :
     - ultrason avant gauche
@@ -66,7 +73,7 @@ ULT_AG = 0
     '''
 
 class MySend(Thread):
-    
+
     detectObstacle = False
     detectObstacleOld = False
     detectObstacleAD = False
@@ -81,8 +88,8 @@ class MySend(Thread):
     
     def __init__(self, bus):
         Thread.__init__(self)
-        self.bus = bus
         self.shutdown_flag = threading.Event()
+        self.bus = bus
     
     def run(self):
         
@@ -91,16 +98,16 @@ class MySend(Thread):
         self.turn = 0
         self.enable = 0
         
-        while not self.shutdown_flag.is_set() :
+        while not self.shutdown_flag.is_set():
             
             msg = self.bus.recv()
             
             # print(msg.arbitration_id, msg.data)
             # print("Reading")
             
-            
-            
             st = ""
+            
+            #------------------------------------------------- LECTURE MESSAGE ----------------------------------------------------
             
             if msg.arbitration_id == US1:
                 
@@ -108,90 +115,122 @@ class MySend(Thread):
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
                 global ULT_AG
                 ULT_AG = distance
-                message = "UFL:" + str(distance)+ ";"
+                message = "UFL:" + str(distance) + ";"
                 if distance < MySend.distanceDetectObstacleAG and distance > 0:
                     MySend.detectObstacleAG=True
-                else: MySend.detectObstacleAG=False
-                print(message)
+                elif distance == 0:
+                    None
+                else:
+                    MySend.detectObstacleAG=False
                 
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
+                global ULT_AD
+                ULT_AD = distance
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacleAD and distance > 0:
                     MySend.detectObstacleAD = True
-                else: MySend.detectObstacleAD = False
-                print(message)
+                elif distance == 0:
+                    None
+                else:
+                    MySend.detectObstacleAD = False
             
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
+                global ULT_AC
+                ULT_AC = distance
                 message = "URC:" + str(distance)+ ";"
-                if distance < MySend.distanceDetectObstacleACproche and distance > 0:
-                    MySend.detectObstacleACproche = True
-                elif distance<MySend.distanceDetectObstacleAC and distance > 0:
+                if distance < MySend.distanceDetectObstacleAC and distance > MySend.distanceDetectObstacleACproche:
                     MySend.detectObstacleAC = True
+                elif distance<MySend.distanceDetectObstacleACproche and distance > 0:
+                    MySend.detectObstacleACproche = True
+                elif distance == 0:
+                    None 
                 else:
                     MySend.detectObstacleAC = False
-                    MySend.detectObstacleACproche = False
+                    MySend.detectObstacleACproche = True
+                    
+            elif msg.arbitration_id == US2:
+                
+                # ultrason arriere gauche
+                distance = int.from_bytes(msg.data[0:2], byteorder='big')
+                global ULT_DG
+                ULT_DG = distance
+                message = "URL:" + str(distance)+ ";"
+                
+                # ultrason arriere droit
+                distance = int.from_bytes(msg.data[2:4], byteorder='big')
+                global ULT_DD
+                ULT_DD = distance
+                message = "URR:" + str(distance)+ ";"
+                
+                # ultrason arriere centre
+                distance = int.from_bytes(msg.data[4:6], byteorder='big')
+                global ULT_DC
+                ULT_DC = distance
+                message = "UFC:" + str(distance)+ ";"
 
-                print(message)
-                MySend.detectObstacleOld = MySend.detectObstacle
-                MySend.detectObstacle = MySend.detectObstacleAC #pour l'instant on regarde que les obstacles en face
-            
             elif msg.arbitration_id == MS:
                 # position volant
                 position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
                 message = "POS:" + str(position_volant)+ ";"
                 #print(message)
+
+            #------------------------------------------------- DETECTION OBSTACLE ----------------------------------------------------
             
-                # detection obstacle lointain avec ultrason avant centre; dans ce cas on tourne à droite
-                if MySend.detectObstacle and not(MySend.detectObstacleAG) and not(MySend.detectObstacleAD) and not(MySend.detectObstacleACproche):
+            MySend.detectObstacleOld = MySend.detectObstacle
+            MySend.detectObstacle = MySend.detectObstacleAC #pour l'instant on regarde que les obstacles en face
+
+            # detection obstacle lointain avec ultrason avant centre; dans ce cas on tourne à droite
+            if MySend.detectObstacle and not(MySend.detectObstacleAG) and not(MySend.detectObstacleAD) and not(MySend.detectObstacleACproche):
+                self.move = 1
+                self.enable = 1
+                differentiel = False
+                if ( MySend.detectObstacle == MySend.detectObstacleOld ): #checke que c'est une valeur plausible et pas juste une erreur de passage
                     self.move = 1
                     self.enable = 1
-                    differentiel = False
-                    if ( MySend.detectObstacle == MySend.detectObstacleOld ): #checke que c'est une valeur plausible et pas juste une erreur de passage
-                        self.move = 1
-                        self.enable = 1
-                        differentiel = True
-                        if (position_volant > 1350):
-                            self.turn = -1
-                        else:
-                            self.turn = 0
-                # detection obstacle proche dans ce cas on s'arrête
-                elif MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleACproche:
-                    self.move = 0
-                    self.enable = 0
-                # si pas d'obstacle on va tout droit
-                else:
-                    self.move = 1
-                    self.enable = 1
-                    differentiel = False
-                    # permet de "rester droit"
-                    if (position_volant < 1600):
-                        self.turn = 1
-                    elif (position_volant > 1700):
+                    differentiel = True
+                    if (position_volant > 1350):
                         self.turn = -1
                     else:
                         self.turn = 0
-    
-                #calcul des commandes de mouvement
-                if self.enable:
-                    if differentiel :
-                        cmd_mv_droit = (50 - self.move*self.speed_cmd - 10) | 0x80   #marche arrière
-                        cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
-                    else:
-                        cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
-                        cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
-                    cmd_turn = 50 + self.turn*20 | 0x80
+            # detection obstacle proche dans ce cas on s'arrête
+            elif MySend.detectObstacleAG or MySend.detectObstacleAD or MySend.detectObstacleACproche:
+                self.move = 0
+                self.enable = 0
+                differentiel = False
+            # si pas d'obstacle on va tout droit
+            else:
+                self.move = 1
+                self.enable = 1
+                differentiel = False
+                # permet de "rester droit"
+                if (position_volant < 1600):
+                    self.turn = 1
+                elif (position_volant > 1700):
+                    self.turn = -1
                 else:
-                    cmd_mv_droit = (50 + self.move*self.speed_cmd) & ~0x80
-                    cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
-                    cmd_turn = 50 + self.turn*20 & 0x80
-            
-            #if (st!=""):print(st)
-            
-                msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
-                self.bus.send(msg)
+                    self.turn = 0
 
+            #------------------------------------------------- CALCUL COMMANDES ----------------------------------------------------
+            
+            if self.enable:
+                cmd_turn = 50 + self.turn*20 | 0x80
+                if differentiel :
+                    cmd_mv_droit = (50 - self.move*self.speed_cmd - 10) | 0x80   #marche arrière
+                    cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
+                else:
+                    cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
+                    cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
+            else:
+                cmd_turn = 50 + self.turn*20 & 0x80
+                cmd_mv_droit = (50 + self.move*self.speed_cmd) & ~0x80
+                cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
+            
+            #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
+            
+            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
+            self.bus.send(msg)
 
 
 # Lidar Thread
@@ -218,6 +257,7 @@ class Lidar(Thread):
         print('%d: Got %d measurments' % (i, len(scan)))
         print('Ultrason %d' % (ULT_AG))
         outputFile.write(''.join(str(x) for x in scan))
+        outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
         outputFile.write('\n')
 
 lidar = RPLidar('/dev/ttyUSB0')
