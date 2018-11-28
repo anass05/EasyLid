@@ -125,7 +125,7 @@ class MySend(Thread):
                     None 
                 else:
                     MySend.detectObstacleAC = False
-                    MySend.detectObstacleACproche = True
+                    MySend.detectObstacleACproche = False
                     
             elif msg.arbitration_id == US2:
                 
