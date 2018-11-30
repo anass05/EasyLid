@@ -98,7 +98,7 @@ class MySend(Thread):
                 # ultrason avant gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
                 if self.i % 10 == 0:
-                    print('avant gauche '+distance)
+                    print('avant gauche '+str(distance))
                 message = "UFL:" + str(distance) + ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAG=True
@@ -110,7 +110,7 @@ class MySend(Thread):
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 if self.i % 10 == 0:
-                    print('avant droit '+distance)
+                    print('avant droit '+str(distance))
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAD = True
@@ -122,7 +122,7 @@ class MySend(Thread):
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 if self.i % 10 == 0:
-                    print('avant centre '+distance)
+                    print('avant centre '+str(distance))
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAC = True
@@ -136,7 +136,7 @@ class MySend(Thread):
                # ultrason derriere
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 if self.i % 10 == 0:
-                    print('derriere '+distance)
+                    print('derriere '+str(distance))
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAR = True
