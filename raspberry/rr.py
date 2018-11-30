@@ -166,7 +166,7 @@ class MySend(Thread):
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
             
-            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
+            msg = can.Message(arbitration_id=MCM,data=[self.cmd_mv_gauche, self.cmd_mv_droit, self.cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
 
 
