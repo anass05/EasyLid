@@ -79,10 +79,12 @@ class MySend(Thread):
         self.move = 0
         self.turn = 0
         self.enable = 0
-        
+        self.i = 0
+
         while True :
             
             msg = self.bus.recv()
+            self.i = self.i + 1
             
             # print(msg.arbitration_id, msg.data)
             # print("Reading")
@@ -95,6 +97,8 @@ class MySend(Thread):
                 
                 # ultrason avant gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
+                if self.i % 10 == 0:
+                    print('avant gauche '+distance)
                 message = "UFL:" + str(distance) + ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAG=True
@@ -105,6 +109,8 @@ class MySend(Thread):
                 
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
+                if self.i % 10 == 0:
+                    print('avant droit '+distance)
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAD = True
@@ -115,6 +121,8 @@ class MySend(Thread):
             
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
+                if self.i % 10 == 0:
+                    print('avant centre '+distance)
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAC = True
@@ -127,6 +135,8 @@ class MySend(Thread):
             elif msg.arbitration_id == US2:
                # ultrason derriere
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
+                if self.i % 10 == 0:
+                    print('derriere '+distance)
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAR = True
@@ -167,7 +177,7 @@ class MySend(Thread):
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
             
             msg = can.Message(arbitration_id=MCM,data=[self.cmd_mv_gauche, self.cmd_mv_droit, self.cmd_turn,0,0,0,0,0],extended_id=False)
-            self.bus.send(msg)
+            #self.bus.send(msg)
 
 
     def marcheAvant(self):
