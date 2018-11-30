@@ -97,7 +97,7 @@ class MySend(Thread):
                 
                 # ultrason avant gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
-                if self.i % 10 == 0:
+                if self.i % 15 == 0:
                     print('avant gauche '+str(distance))
                 message = "UFL:" + str(distance) + ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
