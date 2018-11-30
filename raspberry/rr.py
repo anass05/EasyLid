@@ -86,7 +86,11 @@ class MySend(Thread):
             
             msg = self.bus.recv()
             self.i = self.i + 1
-            
+            if self.i % 10 == 0:
+                print(self.distanceMessage)
+
+            self.distanceMessage = ""
+
             # print(msg.arbitration_id, msg.data)
             # print("Reading")
             
@@ -98,7 +102,7 @@ class MySend(Thread):
                 
                 # ultrason avant gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
-
+                self.distanceMessage += ' avant gauche '+str(distance)
                 message = "UFL:" + str(distance) + ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAG=True
@@ -110,7 +114,7 @@ class MySend(Thread):
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 #if self.i % 10 == 0:
-                 #   print('avant droit '+str(distance))
+                self.distanceMessage +=' avant droit '+str(distance)
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAD = True
@@ -122,7 +126,7 @@ class MySend(Thread):
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 #if self.i % 10 == 0:
-                 #   print('avant centre '+str(distance))
+                self.distanceMessage += ' avant centre '+str(distance)
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAC = True
@@ -135,8 +139,7 @@ class MySend(Thread):
             elif msg.arbitration_id == US2:
                # ultrason derriere
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
-                #if self.i % 10 == 0:
-                 #   print('derriere '+str(distance))
+                self.distanceMessage +=' derriere '+str(distance)
                 message = "UFR:" + str(distance)+ ";"
                 if distance < MySend.distanceDetectObstacle and distance > 0:
                     MySend.detectObstacleAR = True
