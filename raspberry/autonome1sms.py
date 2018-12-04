@@ -67,7 +67,7 @@ class MySend(Thread):
     distanceDetectObstacleAD = 10
     distanceDetectObstacleAG = 10
     distanceDetectObstacleAC = 150
-	envoi = False
+    envoi = False
     
     def __init__(self, bus):
         Thread.__init__(self)
@@ -142,7 +142,7 @@ class MySend(Thread):
 
             msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
-            if self.sms_sent == False:
+            if self.sms_sent == False and self.envoi == True:
                 sms.send("+33650142578", "Obstacle detected")
                 self.sms_sent = True
                 self.envoi = False

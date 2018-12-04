@@ -15,7 +15,7 @@ class SMS_Sender:
 		buffer = self.ser.read(22).decode("utf-8")
 		self.ser.reset_input_buffer()
 		if buffer != '\r\n+CPIN: READY\r\n\r\nOK\r\n':
-            code_pin('AT+CPIN="'+pin+'"\r')
+			code_pin = 'AT+CPIN="'+pin+'"\r'
 			self.ser.write(bytes(code_pin, "utf-8"))
 			buffer = self.ser.read(22).decode("utf-8")
 			self.ser.reset_input_buffer()
@@ -35,7 +35,7 @@ class SMS_Sender:
 			self.ser.reset_input_buffer()
 
 
-    def send(self,number,message):
+	def send(self,number,message):
 
 		self.num='AT+CMGS="'+number+'"\r'
 		self.ser.write(bytes(self.num,"utf-8"))
@@ -46,7 +46,7 @@ class SMS_Sender:
 		buffer = self.ser.read(10).decode("utf-8")
 		self.ser.reset_input_buffer()
         
-		while self.buffer != '\r\nOK\r\n':
+		while buffer != '\r\nOK\r\n':
 			self.ser.write(b'AT\r')
 			buffer = self.ser.read(6).decode("utf-8")
 			self.ser.reset_input_buffer()

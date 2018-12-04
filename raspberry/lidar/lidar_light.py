@@ -58,7 +58,7 @@ class Lidar(Thread):
             savedTurns=0
             outputFile = open(self.type+'/'+fileName,'w')
 
-lidar = RPLidar('/dev/LIDAR')
+lidar = RPLidar('/dev/ttyUSB0')
 
 threadLidar=Lidar(lidar)
 
