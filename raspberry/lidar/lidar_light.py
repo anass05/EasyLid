@@ -12,10 +12,11 @@ class Lidar(Thread):
     Thread.__init__(self)
     self.shutdown_flag = threading.Event()
     self.lidar=lidar
-    if len(sys.argv)<2:
+    print(str(len(sys.argv)))
+    if len(sys.argv)==1:
       self.type='outputs/normal'
       self.size=25
-    if len(sys.argv)<2:
+    elif len(sys.argv)==2:
       self.type='outputs/'+str(sys.argv[1])
       self.size=25
     else:
@@ -33,7 +34,7 @@ class Lidar(Thread):
     if not os.path.exists(self.type):
        os.makedirs(self.type)
     
-    fileName=time.strftime("%d%m%Y%H%M%S")
+    fileName=time.strftime("%Y%m%d%H%M%S")
     savedTurns=0
     outputFile = open(self.type+'/'+fileName,'w')
 
@@ -45,19 +46,19 @@ class Lidar(Thread):
         break
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
-        print('Ultrason %d' % (ULT_AG))
+       # print('Ultrason %d' % (ULT_AG))
         if i%10 == 9:
           outputFile.write(''.join(str(x) for x in scan))
           #outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
           outputFile.write('\n')
-          savedTurns++
+          savedTurns += 1
           if savedTurns >= self.size:
             outputFile.close()
             fileName=time.strftime("%d%m%Y%H%M%S")
             savedTurns=0
             outputFile = open(self.type+'/'+fileName,'w')
 
-lidar = RPLidar('/dev/ttyUSB0')
+lidar = RPLidar('/dev/LIDAR')
 
 threadLidar=Lidar(lidar)
 
