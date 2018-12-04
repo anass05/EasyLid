@@ -36,7 +36,7 @@ class SMS_Sender:
 
 	def send(number,message):
 
-		self.num='AT+CMGS='+number+'\r'
+		self.num='AT+CMGS="'+number+'"\r'
 		self.ser.write(bytes(self.num,"utf-8"))
 		buffer = self.ser.read(10).decode("utf-8")
 		self.ser.reset_input_buffer()
