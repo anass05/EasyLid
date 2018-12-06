@@ -263,7 +263,7 @@ class Lidar(Thread):
          outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
          outputFile.write('\n')
 
-lidar = RPLidar('/dev/ttyUSB0')
+lidar = RPLidar('/dev/LIDAR')
 
 threadLidar=Lidar(lidar)
 
