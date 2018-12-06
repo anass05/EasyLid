@@ -1,6 +1,4 @@
 import serial
-import sys
-from time import sleep
 
 Numeros = ['"+33604414835"','"+33781565844"','"+33773123218"','"+33650142578"','"+33604468945"']
 Noms = ["Valentine","Camille","Anass","Antoine","Gabriel"]
