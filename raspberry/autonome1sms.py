@@ -6,6 +6,7 @@ import time
 import can
 import os
 import struct
+from SMS_Sender import SMS_Sender
 
 HOST = ''                # Symbolic name meaning all available interfaces
 PORT = 6666              # Arbitrary non-privileged port
@@ -72,6 +73,8 @@ class MySend(Thread):
         self.bus = bus
         
     def run(self):
+        sms = SMS_Sender.SMS_Sender("0000")
+        self.sms_sent = False
         
         self.speed_cmd = 30
         self.move = 0
@@ -119,6 +122,10 @@ class MySend(Thread):
             if MySend.detectObstacle:
                 self.move = 0
                 self.enable = 0
+                if self.sms_sent == False:
+                    sms.send("+33650142578", "Obstacle detected")
+                    self.sms_sent = True
+                    del sms
             else:
                 self.move = 1
                 self.enable = 1
