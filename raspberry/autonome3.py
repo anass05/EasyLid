@@ -196,24 +196,38 @@ class MySend(Thread):
             
             MySend.detectObstacleAVCold = MySend.detectObstacleAVC #pour l'instant on regarde que les obstacles en face
 
-            # detection obstacle lointain avec ultrason avant centre; dans ce cas on tourne à droite
-            if MySend.detectObstacleAVC and not(MySend.detectObstacleAVG) and not(MySend.detectObstacleAVD) and not(MySend.detectObstacleAVCproche):
-                self.move = 1
-                self.enable = 1
-                differentiel = False
-                if ( MySend.detectObstacleAVC == MySend.detectObstacleAVCold ): #checke que c'est une valeur plausible et pas juste une erreur de passage
-                    self.move = 1
-                    self.enable = 1
-                    differentiel = True
-                    if (position_volant > 1350):
-                        self.turn = -1
-                    else:
-                        self.turn = 0
             # detection obstacle proche dans ce cas on s'arrête
-            elif MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche or MySend.detectObstacleARC:
+            if MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche or MySend.detectObstacleARC:
                 self.move = 0
                 self.enable = 0
                 differentiel = False
+
+            # cul de sac -> arret
+            elif MySend.detectObstacleAVC and MySend.detectObstacleARG and MySend.detectObstacleARD:
+                self.move = 0
+                self.enable = 0
+                differentiel = False
+            
+            # tourner a droite
+            elif (MySend.detectObstacleAVC and not(MySend.detectObstacleARD) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+                self.move = 1
+                self.enable = 1
+                differentiel = True
+                if (position_volant > 1350):
+                    self.turn = -1
+                else:
+                    self.turn = 0
+                    
+            #tourner à gauche
+            elif (MySend.detectObstacleAVC and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+                self.move = 1
+                self.enable = 1
+                differentiel = True
+                if (position_volant < 1800):
+                    self.turn = 1
+                else:
+                    self.turn = 0
+                                    
             # si pas d'obstacle on va tout droit
             else:
                 self.move = 1
