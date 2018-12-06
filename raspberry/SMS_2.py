@@ -1,11 +1,9 @@
 import serial
-import sys
-from time import sleep
 
 Numeros = ['"+33604414835"','"+33781565844"','"+33773123218"','"+33650142578"','"+33604468945"']
 Noms = ["Valentine","Camille","Anass","Antoine","Gabriel"]
 
-ser = serial.Serial('/dev/ttyUSB0',115200,rtscts=True,timeout=2)
+ser = serial.Serial('/dev/SMS',115200,rtscts=True,timeout=2)
 print(ser.name)
 buffer = ''
 ser.write(b'ATE\r')
