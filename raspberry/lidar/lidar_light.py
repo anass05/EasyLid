@@ -4,6 +4,8 @@ import sys
 import signal
 from threading import Thread
 import threading
+path = 'outputs/test1'
+outputFile = open(path,'w')
 
 class Lidar(Thread):
   def __init__(self, lidar):
@@ -20,11 +22,17 @@ class Lidar(Thread):
     for i, scan in enumerate(self.lidar.iter_scans()):
       if self.shutdown_flag.is_set():
         print('please wait, lidar is shuting down')
+        outputFile.close()
         break
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
+        print('Ultrason %d' % (ULT_AG))
+        if i%10 == 0:
+         outputFile.write(''.join(str(x) for x in scan))
+         #outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
+         outputFile.write('\n')
 
-lidar = RPLidar('/dev/ttyUSB0')
+lidar = RPLidar('/dev/LIDAR')
 
 threadLidar=Lidar(lidar)
 
@@ -39,5 +47,4 @@ def signal_handler(sig, frame):
 if __name__ == "__main__":
   threadLidar.start()
   signal.signal(signal.SIGINT, signal_handler)
-  print('Press Ctrl+C')
   threadLidar.join()
