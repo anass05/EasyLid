@@ -1,8 +1,6 @@
 import serial
-import sys
-from time import sleep
 
-ser = serial.Serial('/dev/ttyUSB0',115200,rtscts=True,timeout=2)
+ser = serial.Serial('/dev/SMS',115200,rtscts=True,timeout=2)
 print(ser.name)
 buffer = ''
 ser.write(b'ATE\r')
