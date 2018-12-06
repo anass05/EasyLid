@@ -4,20 +4,40 @@ import sys
 import signal
 from threading import Thread
 import threading
-path = 'outputs/test1'
-outputFile = open(path,'w')
+import os
+
 
 class Lidar(Thread):
   def __init__(self, lidar):
     Thread.__init__(self)
     self.shutdown_flag = threading.Event()
     self.lidar=lidar
+    print(str(len(sys.argv)))
+    if len(sys.argv)==1:
+      self.type='outputs/normal'
+      self.size=25
+    elif len(sys.argv)==2:
+      self.type='outputs/'+str(sys.argv[1])
+      self.size=25
+    else:
+      self.type='outputs/'+str(sys.argv[1])
+      self.size=int(str(sys.argv[2]))
+
+
   def run(self):
     info = self.lidar.get_info()
     print(info)
     health = self.lidar.get_health()
     print(health)
+    if not os.path.exists('outputs'):
+       os.makedirs('outputs')
+    if not os.path.exists(self.type):
+       os.makedirs(self.type)
     
+    fileName=time.strftime("%Y%m%d%H%M%S")
+    savedTurns=0
+    outputFile = open(self.type+'/'+fileName,'w')
+
     time.sleep(5);
     for i, scan in enumerate(self.lidar.iter_scans()):
       if self.shutdown_flag.is_set():
@@ -26,11 +46,17 @@ class Lidar(Thread):
         break
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
-        print('Ultrason %d' % (ULT_AG))
-        if i%10 == 0:
-         outputFile.write(''.join(str(x) for x in scan))
-         #outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
-         outputFile.write('\n')
+       # print('Ultrason %d' % (ULT_AG))
+        if i%10 == 9:
+          outputFile.write(''.join(str(x) for x in scan))
+          #outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
+          outputFile.write('\n')
+          savedTurns += 1
+          if savedTurns >= self.size:
+            outputFile.close()
+            fileName=time.strftime("%d%m%Y%H%M%S")
+            savedTurns=0
+            outputFile = open(self.type+'/'+fileName,'w')
 
 lidar = RPLidar('/dev/LIDAR')
 
