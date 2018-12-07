@@ -45,11 +45,6 @@ class SMS_Sender:
 		self.ser.write(bytes(message,"utf-8")+bytes(chr(26),"utf-8")+b'\r')
 		buffer = self.ser.read(10).decode("utf-8")
 		self.ser.reset_input_buffer()
-        
-		while buffer != '\r\nOK\r\n':
-			self.ser.write(b'AT\r')
-			buffer = self.ser.read(6).decode("utf-8")
-			self.ser.reset_input_buffer()
 
 	def __del__(self):
 		self.ser.close()
