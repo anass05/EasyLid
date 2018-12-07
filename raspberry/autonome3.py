@@ -74,7 +74,7 @@ class MySend(Thread):
     detectObstacleARC = False
     
     differentielD = False
-    MySend.differentielG = False
+    differentielG = False
 
     lastActionD = True
     lastActionG = False
