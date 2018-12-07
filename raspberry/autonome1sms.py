@@ -144,7 +144,7 @@ class MySend(Thread):
             msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
             if self.sms_sent == False and self.envoi == True:
-                sms.send("+33663073229", "Bonjour madame, votre groupe préféré a le plaisir de vous annoncer qu'il arrive à envoyer des SMS depuis la voiture. PS: prière de ne pas répondre notre voiture n'a pas la capacité de lire les messages :p")
+                sms.send("+33663583484", "Bonjour monsieur, votre groupe préféré a le plaisir de vous annoncer qu'il arrive à envoyer des SMS depuis la voiture. PS: prière de ne pas répondre notre voiture n'a pas la capacité de lire les messages :p")
                 self.sms_sent = True
                 self.envoi = False
                 del sms
