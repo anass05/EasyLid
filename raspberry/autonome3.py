@@ -206,8 +206,8 @@ class MySend(Thread):
 
             # cul de sac -> arret
             elif MySend.detectObstacleAVC and MySend.detectObstacleARG and MySend.detectObstacleARD:
-                self.move = 0
-                self.enable = 0
+                self.move = -1
+                self.enable = 1
                 differentielD = False
                 differentielG = False
 
