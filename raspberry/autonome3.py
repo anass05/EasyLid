@@ -76,6 +76,9 @@ class MySend(Thread):
     differentielD = False
     differentielG = False
 
+    lastActionD = True
+    lascActionG = False
+
     # distance max
     # avant voiture
     distanceDetectObstacleAVD = 30
@@ -84,9 +87,9 @@ class MySend(Thread):
     distanceDetectObstacleAVCproche = 30
     #arriere voiture
     distanceDetectObstacleARD = 100
-    distanceDetectObstacleARDproche = 10
+    distanceDetectObstacleARDproche = 20
     distanceDetectObstacleARG = 100
-    distanceDetectObstacleARGproche = 10
+    distanceDetectObstacleARGproche = 20
     distanceDetectObstacleARC = 30
 
     
@@ -206,26 +209,30 @@ class MySend(Thread):
 
             # cul de sac -> reculer
             elif MySend.detectObstacleAVC and MySend.detectObstacleARG and MySend.detectObstacleARD:
-                self.move = 0
-                self.enable = 0
+                self.move = -1
+                self.enable = 1
                 differentielD = False
                 differentielG = False
 
             # tourner a droite
-            elif (MySend.detectObstacleAVC and not(MySend.detectObstacleARD) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARG or lastActionD) and not(MySend.detectObstacleARD) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
                 self.enable = 1
                 differentielD = True
+                lastActionD = True
+                lastActionG = False
                 #if (position_volant > 1350):
                 self.turn = -1
                 #else:
                  #   self.turn = 0
                     
             #tourner à gauche
-            elif (MySend.detectObstacleAVC and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARD or lastActionG) and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
                 self.enable = 1
                 differentielG = True
+                lastActionD = False
+                lastActionG = True
                 #if (position_volant < 1800):
                 self.turn = 1
                 #else:
@@ -254,12 +261,12 @@ class MySend(Thread):
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
                 elif differentielG:
                     cmd_mv_droit = (40 + self.move*self.speed_cmd) | 0x80   
-                    cmd_mv_gauche = (50 - self.move*self.speed_cmd - 10) | 0x80 #marche arrière
+                    cmd_mv_gauche = (50 - self.move*self.speed_cmd) | 0x80 #marche arrière
                 else:
                     cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
             else:
-                cmd_turn = 50 + self.turn*50 & 0x80
+                cmd_turn = 50 + self.turn*50 & ~0x80
                 cmd_mv_droit = (50 + self.move*self.speed_cmd) & ~0x80
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
             
