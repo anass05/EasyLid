@@ -73,7 +73,8 @@ class MySend(Thread):
     detectObstacleARGproche = False
     detectObstacleARC = False
     
-    differentiel = False
+    differentielD = False
+    differentielG = False
 
     # distance max
     # avant voiture
@@ -200,19 +201,21 @@ class MySend(Thread):
             if MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche or MySend.detectObstacleARC:
                 self.move = 0
                 self.enable = 0
-                differentiel = False
+                differentielD = False
+                differentielG = False
 
             # cul de sac -> arret
             elif MySend.detectObstacleAVC and MySend.detectObstacleARG and MySend.detectObstacleARD:
                 self.move = 0
                 self.enable = 0
-                differentiel = False
-            
+                differentielD = False
+                differentielG = False
+
             # tourner a droite
             elif (MySend.detectObstacleAVC and not(MySend.detectObstacleARD) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
                 self.enable = 1
-                differentiel = True
+                differentielD = True
                 if (position_volant > 1350):
                     self.turn = -1
                 else:
@@ -222,7 +225,7 @@ class MySend(Thread):
             elif (MySend.detectObstacleAVC and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
                 self.enable = 1
-                differentiel = True
+                differentielG = True
                 if (position_volant < 1800):
                     self.turn = 1
                 else:
@@ -245,9 +248,12 @@ class MySend(Thread):
             
             if self.enable:
                 cmd_turn = 50 + self.turn*20 | 0x80
-                if differentiel :
+                if differentielD :
                     cmd_mv_droit = (50 - self.move*self.speed_cmd - 10) | 0x80   #marche arrière
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
+                elif differentielG:
+                    cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80   
+                    cmd_mv_gauche = (50 - self.move*self.speed_cmd - 10) | 0x80 #marche arrière
                 else:
                     cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
