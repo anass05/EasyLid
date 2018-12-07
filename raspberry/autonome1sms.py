@@ -115,6 +115,7 @@ class MySend(Thread):
                 if distance < MySend.distanceDetectObstacleAC and distance > 0:
                     MySend.detectObstacleAC = True
                 else: MySend.detectObstacleAC = False
+                print(distance)
                 
                 MySend.detectObstacleOld = MySend.detectObstacle
                 MySend.detectObstacle = MySend.detectObstacleAC #pour l'instant on regarde que les obstacles en face
