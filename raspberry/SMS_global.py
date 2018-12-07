@@ -1,7 +1,7 @@
 import serial
 
-Numeros = ['"+33663073229"','"+3363583484"','"+33688770694"','"+33650142578"','"+33604468945"']
-Noms = ["Mrs Chantery","Mr Hladik","Mrs Moore","Antoine","Gabriel","]
+Numeros = ['"+33663073229"','"+3363583484"','"+33688770694"','"+33615707196"','"+33662562275"','"+33649867289"', '"+33675988393"', '"+33626362813"','"+33622855216"', '"+33768857259"', '"+33673486901"', '"+33782993005"', '"+33768255751"', '"+33659621072"']
+Noms = ["Mrs Chanthery","Mr Hladik","Mrs Moore","Yandika","Vincent", "Azzedine", "Baptiste", "Thibaud", "Aurelien", "Eunhwan", "Jonathan", "Ninni", "Abdelilah", "Amaury"]
 
 ser = serial.Serial('/dev/SMS',115200,rtscts=True,timeout=2)
 print(ser.name)
@@ -49,7 +49,7 @@ for i in range(5):
 	buffer = ser.read(10).decode("utf-8")
 	print(buffer)
 	ser.reset_input_buffer()
-	msg='Hi '+Noms[i]+'! This message was sent automatically <3 <3.'
+	msg='Hello '+Noms[i]+"! Welcome to this third review! Enjoy our amazing presentation. This message was sent from Team Tokyo's car."
 	print(msg)
 	ser.write(bytes(msg,"utf-8")+bytes(chr(26),"utf-8")+b'\r')
 	buffer = ser.read(10).decode("utf-8")
