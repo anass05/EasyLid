@@ -86,7 +86,7 @@ class MySend(Thread):
             
             msg = self.bus.recv()
             self.i = self.i + 1
-            if self.i % 10 == 0:
+            if self.i % 15 == 0:
                 print(self.distanceMessage)
 
             self.distanceMessage = ""
