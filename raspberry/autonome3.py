@@ -235,7 +235,8 @@ class MySend(Thread):
             else:
                 self.move = 1
                 self.enable = 1
-                differentiel = False
+                differentielD = False
+                differentielG = False
                 # permet de "rester droit"
                 if (position_volant < 1600):
                     self.turn = 1
