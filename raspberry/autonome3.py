@@ -204,10 +204,10 @@ class MySend(Thread):
                 differentielD = False
                 differentielG = False
 
-            # cul de sac -> arret
+            # cul de sac -> reculer
             elif MySend.detectObstacleAVC and MySend.detectObstacleARG and MySend.detectObstacleARD:
-                self.move = -1
-                self.enable = 1
+                self.move = 0
+                self.enable = 0
                 differentielD = False
                 differentielG = False
 
@@ -216,20 +216,20 @@ class MySend(Thread):
                 self.move = 1
                 self.enable = 1
                 differentielD = True
-                if (position_volant > 1350):
-                    self.turn = -1
-                else:
-                    self.turn = 0
+                #if (position_volant > 1350):
+                self.turn = -1
+                #else:
+                 #   self.turn = 0
                     
             #tourner à gauche
             elif (MySend.detectObstacleAVC and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
                 self.enable = 1
                 differentielG = True
-                if (position_volant < 1800):
-                    self.turn = 1
-                else:
-                    self.turn = 0
+                #if (position_volant < 1800):
+                self.turn = 1
+                #else:
+                 #   self.turn = 0
                                     
             # si pas d'obstacle on va tout droit
             else:
