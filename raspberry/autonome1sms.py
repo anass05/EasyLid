@@ -66,7 +66,7 @@ class MySend(Thread):
     detectObstacleAC = False
     distanceDetectObstacleAD = 10
     distanceDetectObstacleAG = 10
-    distanceDetectObstacleAC = 150
+    distanceDetectObstacleAC = 70
     envoi = False
     
     def __init__(self, bus):
@@ -115,6 +115,7 @@ class MySend(Thread):
                 if distance < MySend.distanceDetectObstacleAC and distance > 0:
                     MySend.detectObstacleAC = True
                 else: MySend.detectObstacleAC = False
+                print(distance)
                 
                 MySend.detectObstacleOld = MySend.detectObstacle
                 MySend.detectObstacle = MySend.detectObstacleAC #pour l'instant on regarde que les obstacles en face
@@ -143,7 +144,7 @@ class MySend(Thread):
             msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
             if self.sms_sent == False and self.envoi == True:
-                sms.send("+33650142578", "Obstacle detected")
+                sms.send("+33663073229", "Bonjour madame, votre groupe préféré a le plaisir de vous annoncer qu'il arrive à envoyer des SMS depuis la voiture. PS: prière de ne pas répondre notre voiture n'a pas la capacité de lire les messages :p")
                 self.sms_sent = True
                 self.envoi = False
                 del sms
