@@ -74,10 +74,10 @@ class MySend(Thread):
     detectObstacleARC = False
     
     differentielD = False
-    differentielG = False
+    MySend.differentielG = False
 
     lastActionD = True
-    lascActionG = False
+    lastActionG = False
 
     # distance max
     # avant voiture
@@ -204,35 +204,35 @@ class MySend(Thread):
             if MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche or MySend.detectObstacleARC:
                 self.move = 0
                 self.enable = 0
-                differentielD = False
-                differentielG = False
+                MySend.differentielD = False
+                MySend.differentielG = False
 
             # cul de sac -> reculer
             elif MySend.detectObstacleAVC and MySend.detectObstacleARG and MySend.detectObstacleARD:
                 self.move = -1
                 self.enable = 1
-                differentielD = False
-                differentielG = False
+                MySend.differentielD = False
+                MySend.differentielG = False
 
             # tourner a droite
-            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARG or lastActionD) and not(MySend.detectObstacleARD) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARG or MySend.lastActionD) and not(MySend.detectObstacleARD) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
                 self.enable = 1
-                differentielD = True
-                lastActionD = True
-                lastActionG = False
+                MySend.differentielD = True
+                MySend.lastActionD = True
+                MySend.lastActionG = False
                 #if (position_volant > 1350):
                 self.turn = -1
                 #else:
                  #   self.turn = 0
                     
             #tourner à gauche
-            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARD or lastActionG) and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARD or MySend.lastActionG) and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
                 self.enable = 1
-                differentielG = True
-                lastActionD = False
-                lastActionG = True
+                MySend.differentielG = True
+                MySend.lastActionD = False
+                MySend.lastActionG = True
                 #if (position_volant < 1800):
                 self.turn = 1
                 #else:
@@ -242,8 +242,8 @@ class MySend(Thread):
             else:
                 self.move = 1
                 self.enable = 1
-                differentielD = False
-                differentielG = False
+                MySend.differentielD = False
+                MySend.differentielG = False
                 # permet de "rester droit"
                 if (position_volant < 1600):
                     self.turn = 1
@@ -256,10 +256,10 @@ class MySend(Thread):
             
             if self.enable:
                 cmd_turn = 50 + self.turn*50 | 0x80
-                if differentielD :
+                if MySend.differentielD :
                     cmd_mv_droit = (60 - self.move*self.speed_cmd) | 0x80   #marche arrière
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
-                elif differentielG:
+                elif MySend.differentielG:
                     cmd_mv_droit = (40 + self.move*self.speed_cmd) | 0x80   
                     cmd_mv_gauche = (50 - self.move*self.speed_cmd) | 0x80 #marche arrière
                 else:
