@@ -144,7 +144,7 @@ class MySend(Thread):
             msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
             if self.sms_sent == False and self.envoi == True:
-                sms.send("+33650142578", "Obstacle detected")
+                sms.send("+33781565844", "Oh no, I detected an obstacle!")
                 self.sms_sent = True
                 self.envoi = False
                 del sms

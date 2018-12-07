@@ -360,5 +360,6 @@ class RPLidar(object):
                 if len(scan) > min_len:
                     yield scan
                 scan = []
-            scan.append((quality, angle, distance))
+            if distance>0:
+                scan.append((quality, angle, distance))
 

@@ -37,7 +37,6 @@ class Lidar(Thread):
     fileName=time.strftime("%Y%m%d%H%M%S")
     savedTurns=0
     outputFile = open(self.type+'/'+fileName,'w')
-
     time.sleep(5);
     for i, scan in enumerate(self.lidar.iter_scans()):
       if self.shutdown_flag.is_set():
@@ -48,7 +47,13 @@ class Lidar(Thread):
         print('%d: Got %d measurments' % (i, len(scan)))
        # print('Ultrason %d' % (ULT_AG))
         if i%10 == 9:
-          outputFile.write(''.join(str(x) for x in scan))
+          lidarTab = []
+          for i in range(360):
+            lidarTab.append(0)
+          
+          for x in scan:
+            lidarTab[int(x[1])]=x[2]
+          outputFile.write(''.join(str(x)+', ' for x in lidarTab))
           #outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
           outputFile.write('\n')
           savedTurns += 1
