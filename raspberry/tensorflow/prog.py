@@ -20,7 +20,7 @@ model = keras.Sequential([keras.layers.Flatten(input_shape=(28, 28)),keras.layer
 
 model.compile(optimizer=tf.train.AdamOptimizer(), loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 
-model.fit(train_images, train_labels, epochs=10)
+model.fit(train_images, train_labels, epochs=1)
 
 test_loss, test_acc = model.evaluate(test_images, test_labels)
 
@@ -28,4 +28,7 @@ print('Test accuracy:', test_acc)
 
 predictions = model.predict(test_images)
 
-print(class_names[np.argmax(predictions[0])])
+print(class_names[np.argmax(predictions[1])],' ',class_names[test_labels[1]])
+print(class_names[np.argmax(predictions[3])],' ',class_names[test_labels[3]])
+print(class_names[np.argmax(predictions[6])],' ',class_names[test_labels[6]])
+print(class_names[np.argmax(predictions[7])],' ',class_names[test_labels[7]])
