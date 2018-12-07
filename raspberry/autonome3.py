@@ -248,18 +248,18 @@ class MySend(Thread):
             #------------------------------------------------- CALCUL COMMANDES ----------------------------------------------------
             
             if self.enable:
-                cmd_turn = 50 + self.turn*20 | 0x80
+                cmd_turn = 50 + self.turn*50 | 0x80
                 if differentielD :
-                    cmd_mv_droit = (50 - self.move*self.speed_cmd - 10) | 0x80   #marche arrière
+                    cmd_mv_droit = (60 - self.move*self.speed_cmd) | 0x80   #marche arrière
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
                 elif differentielG:
-                    cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80   
+                    cmd_mv_droit = (40 + self.move*self.speed_cmd) | 0x80   
                     cmd_mv_gauche = (50 - self.move*self.speed_cmd - 10) | 0x80 #marche arrière
                 else:
                     cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
             else:
-                cmd_turn = 50 + self.turn*20 & 0x80
+                cmd_turn = 50 + self.turn*50 & 0x80
                 cmd_mv_droit = (50 + self.move*self.speed_cmd) & ~0x80
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
             
