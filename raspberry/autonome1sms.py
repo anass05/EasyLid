@@ -66,7 +66,7 @@ class MySend(Thread):
     detectObstacleAC = False
     distanceDetectObstacleAD = 10
     distanceDetectObstacleAG = 10
-    distanceDetectObstacleAC = 150
+    distanceDetectObstacleAC = 70
     envoi = False
     
     def __init__(self, bus):
