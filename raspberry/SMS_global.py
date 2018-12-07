@@ -1,7 +1,7 @@
 import serial
 
-Numeros = ['"+33604414835"','"+33781565844"','"+33773123218"','"+33650142578"','"+33604468945"']
-Noms = ["Valentine","Camille","Anass","Antoine","Gabriel"]
+Numeros = ['"+33663073229"','"+3363583484"','"+33688770694"','"+33650142578"','"+33604468945"']
+Noms = ["Mrs Chantery","Mr Hladik","Mrs Moore","Antoine","Gabriel","]
 
 ser = serial.Serial('/dev/SMS',115200,rtscts=True,timeout=2)
 print(ser.name)
