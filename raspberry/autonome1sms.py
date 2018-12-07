@@ -66,7 +66,7 @@ class MySend(Thread):
     detectObstacleAC = False
     distanceDetectObstacleAD = 10
     distanceDetectObstacleAG = 10
-    distanceDetectObstacleAC = 150
+    distanceDetectObstacleAC = 70
     envoi = False
     
     def __init__(self, bus):
@@ -115,6 +115,7 @@ class MySend(Thread):
                 if distance < MySend.distanceDetectObstacleAC and distance > 0:
                     MySend.detectObstacleAC = True
                 else: MySend.detectObstacleAC = False
+                print(distance)
                 
                 MySend.detectObstacleOld = MySend.detectObstacle
                 MySend.detectObstacle = MySend.detectObstacleAC #pour l'instant on regarde que les obstacles en face
