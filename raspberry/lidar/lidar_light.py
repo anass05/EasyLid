@@ -53,7 +53,7 @@ class Lidar(Thread):
           
           for x in scan:
             lidarTab[int(x[1])]=x[2]
-          outputFile.write(''.join(', '.str(x) for x in lidarTab))
+          outputFile.write(''.join(str(x)+', ' for x in lidarTab))
           #outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
           outputFile.write('\n')
           savedTurns += 1
