@@ -28,7 +28,23 @@ print('Test accuracy:', test_acc)
 
 predictions = model.predict(test_images)
 
-print(class_names[np.argmax(predictions[1])],' ',class_names[test_labels[1]])
+
+'''print(class_names[np.argmax(predictions[1])],' ',class_names[test_labels[1]])
 print(class_names[np.argmax(predictions[3])],' ',class_names[test_labels[3]])
 print(class_names[np.argmax(predictions[6])],' ',class_names[test_labels[6]])
-print(class_names[np.argmax(predictions[7])],' ',class_names[test_labels[7]])
+print(class_names[np.argmax(predictions[7])],' ',class_names[test_labels[7]])'''
+
+
+x = int(input('please give an index to predict : '))
+print('the algorithm has predicted : '+class_names[np.argmax(predictions[x])])
+print()
+
+x = int(input('please give an index to predict : '))
+print('the algorithm has predicted : '+class_names[np.argmax(predictions[x])])
+print()
+
+x = int(input('please give an index to predict : '))
+print('the algorithm has predicted : '+class_names[np.argmax(predictions[x])])
+print()
+
+
