@@ -260,7 +260,7 @@ class MySend(Thread):
             
             if self.enable:
                 cmd_turn = 50 + self.turn*50 | 0x80
-                print(cmd_turn)
+                #print(cmd_turn)
                 if MySend.differentielD :
                     cmd_mv_droit = (60 - self.move*self.speed_cmd) | 0x80   #marche arrière
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
@@ -320,6 +320,9 @@ if __name__ == "__main__":
 
     VOL_CENTRE = (VOL_GAUCHE+VOL_DROIT)/2
 
+    print(VOL_DROIT)
+    print(VOL_GAUCHE)
+    print(VOL_CENTRE)
     newsend = MySend(bus)
     newsend.start()
 
