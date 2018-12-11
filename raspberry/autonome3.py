@@ -306,7 +306,7 @@ if __name__ == "__main__":
     bus.send(msg)
     while not (bus.recv().arbitration_id == MS):
         None
-    VOL_GAUCHE = int.from_bytes(msg.data[0:2], byteorder='big')
+    VOL_GAUCHE = int.from_bytes(bus.recv().data[0:2], byteorder='big')
    
     #droit
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
@@ -316,9 +316,9 @@ if __name__ == "__main__":
     bus.send(msg)
     while not(bus.recv().arbitration_id == MS):
         None
-    VOL_DROIT = int.from_bytes(msg.data[0:2], byteorder='big')
+    VOL_DROIT = int.from_bytes(bus.recv().data[0:2], byteorder='big')
 
-    VOL_CENTRE = (VOL_GAUCHE+VOL_DROIT)/2
+    VOL_CENTRE = int((VOL_GAUCHE+VOL_DROIT)/2)
 
     print(VOL_DROIT)
     print(VOL_GAUCHE)
