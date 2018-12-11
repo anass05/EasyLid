@@ -250,9 +250,9 @@ class MySend(Thread):
                 MySend.differentielG = False
                 # permet de "rester droit"
                 if (position_volant < VOL_CENTRE-50):
-                    self.turn = 1
+                    self.turn = 0.8
                 elif (position_volant > VOL_CENTRE+50):
-                    self.turn = -1
+                    self.turn = -0.8
                 else:
                     self.turn = 0
 
