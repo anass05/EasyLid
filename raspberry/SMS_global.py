@@ -1,7 +1,7 @@
 import serial
 
-Numeros = ['"+33663073229"','"+3363583484"','"+33688770694"','"+33615707196"','"+33662562275"','"+33649867289"', '"+33675988393"', '"+33626362813"','"+33622855216"', '"+33768857259"', '"+33673486901"', '"+33782993005"', '"+33768255751"', '"+33659621072"']
-Noms = ["Mrs Chanthery","Mr Hladik","Mrs Moore","Yandika","Vincent", "Azzedine", "Baptiste", "Thibaud", "Aurelien", "Eunhwan", "Jonathan", "Ninni", "Abdelilah", "Amaury"]
+Numeros = ['"+33663073229"','"+3363583484"','"+33688770694"','"+33615707196"','"+33662562275"','"+33649867289"', '"+33675988393"', '"+33626362813"','"+33622855216"', '"+33768857259"', '"+33673486901"', '"+33782993005"', '"+33768255751"', '"+33659621072"', '"+33642859205"', '"+33604409859"', '"+33689213937"']
+Noms = ["Mrs Chanthery","Mr Hladik","Mrs Moore","Yandika","Vincent", "Azzedine", "Baptiste", "Thibaud", "Aurelien", "Eunhwan", "Jonathan", "Ninni", "Abdelilah", "Amaury", "Tanguy", "David", "Christine"]
 
 ser = serial.Serial('/dev/SMS',115200,rtscts=True,timeout=2)
 print(ser.name)
@@ -42,7 +42,7 @@ while buffer != '\r\nOK\r\n':
 	print(buffer)
 	ser.reset_input_buffer()
 
-for i in range(5):
+for i in range(17):
 	num='AT+CMGS='+Numeros[i]+'\r'
 	print(num)
 	ser.write(bytes(num,"utf-8"))
