@@ -225,7 +225,7 @@ class MySend(Thread):
                 MySend.differentielD = True
                 MySend.lastActionD = True
                 MySend.lastActionG = False
-                if (position_volant > VOL_DROITE+50):
+                if (position_volant > VOL_DROIT+50):
                     self.turn = -1
                 else:
                     self.turn = 0
