@@ -1,7 +1,7 @@
 #include "steering.h"
 
-#define MAX_SPEED_STEERING 60
-#define MIN_SPEED_STEERING 40 
+#define MAX_SPEED_STEERING 70
+#define MIN_SPEED_STEERING 30 
 
 extern uint32_t ADCBUF[5];
 
