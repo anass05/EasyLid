@@ -17,6 +17,10 @@ US2 = 0x001
 OM1 = 0x101
 OM2 = 0x102
 
+VOL_GAUCHE=0
+VOL_DROIT=0
+VOL_CENTRE=0
+
 
 '''
     Messages envoyés :
@@ -221,10 +225,10 @@ class MySend(Thread):
                 MySend.differentielD = True
                 MySend.lastActionD = True
                 MySend.lastActionG = False
-                #if (position_volant > 1350):
-                self.turn = -1
-                #else:
-                 #   self.turn = 0
+                if (position_volant > VOL_DROITE+50):
+                    self.turn = -1
+                else:
+                    self.turn = 0
                     
             #tourner à gauche
             elif (MySend.detectObstacleAVC and (MySend.detectObstacleARD or MySend.lastActionG) and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
@@ -233,10 +237,10 @@ class MySend(Thread):
                 MySend.differentielG = True
                 MySend.lastActionD = False
                 MySend.lastActionG = True
-                #if (position_volant < 1800):
-                self.turn = 1
-                #else:
-                 #   self.turn = 0
+                if (position_volant < VOL_GAUCHE-50):
+                    self.turn = 1
+                else:
+                    self.turn = 0
                                     
             # si pas d'obstacle on va tout droit
             else:
@@ -245,9 +249,9 @@ class MySend(Thread):
                 MySend.differentielD = False
                 MySend.differentielG = False
                 # permet de "rester droit"
-                if (position_volant < 1600):
+                if (position_volant < VOL_CENTRE-50):
                     self.turn = 1
-                elif (position_volant > 1700):
+                elif (position_volant > VOL_CENTRE+50):
                     self.turn = -1
                 else:
                     self.turn = 0
@@ -294,7 +298,23 @@ if __name__ == "__main__":
         print('Cannot find PiCAN board.')
         exit()
 
+    #gauche
+    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
+    bus.send(msg)
+    time.sleep(0.5)
+    while not (msg.arbitration_id == MS):
+        None
+    VOL_GAUCHE = int.from_bytes(msg.data[0:2], byteorder='big')
+        
+    #droit
+    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
+    bus.send(msg)
+    time.sleep(0.5)
+    while not(msg.arbitration_id == MS):
+        None
+    VOL_DROIT = int.from_bytes(msg.data[0:2], byteorder='big')
 
+    VOL_CENTRE = (VOL_GAUCHE+VOL_DROIT)/2
 
     newsend = MySend(bus)
     newsend.start()
