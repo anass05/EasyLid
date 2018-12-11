@@ -225,7 +225,7 @@ class MySend(Thread):
                 MySend.differentielD = True
                 MySend.lastActionD = True
                 MySend.lastActionG = False
-                if (position_volant > VOL_DROIT+50):
+                if (position_volant < VOL_DROIT-50):
                     self.turn = -1
                 else:
                     self.turn = 0
@@ -237,7 +237,7 @@ class MySend(Thread):
                 MySend.differentielG = True
                 MySend.lastActionD = False
                 MySend.lastActionG = True
-                if (position_volant < VOL_GAUCHE-50):
+                if (position_volant > VOL_GAUCHE+50):
                     self.turn = 1
                 else:
                     self.turn = 0
@@ -309,7 +309,9 @@ if __name__ == "__main__":
     while not (msg1.arbitration_id == MS):
         msg1=bus.recv()
     VOL_GAUCHE = int.from_bytes(msg1.data[0:2], byteorder='big')
-   
+
+    bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+    
     #droit
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
     bus.send(msg)
