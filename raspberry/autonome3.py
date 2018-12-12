@@ -299,31 +299,31 @@ if __name__ == "__main__":
         print('Cannot find PiCAN board.')
         exit()
 
-    
+
     #gauche
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
-    self.bus.send(msg)
+    bus.send(msg)
     time.sleep(0.75)
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
-    self.bus.send(msg)
+    bus.send(msg)
     time.sleep(0.5)
-    msg1=self.bus.recv()
+    msg1=bus.recv()
     while not (msg1.arbitration_id == MS):
-        msg1=self.bus.recv()
+        msg1=bus.recv()
     VOL_GAUCHE = int.from_bytes(msg1.data[0:2], byteorder='big')
 
-    self.bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+    bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
 
     #droit
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
-    self.bus.send(msg)
+    bus.send(msg)
     time.sleep(0.75)
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
-    self.bus.send(msg)
-    msg2=self.bus.recv()
+    bus.send(msg)
+    msg2=bus.recv()
     time.sleep(0.5)
     while not(msg2.arbitration_id == MS):
-        msg2=self.bus.recv()
+        msg2=bus.recv()
     VOL_DROIT = int.from_bytes(msg2.data[0:2], byteorder='big')
 
     VOL_CENTRE = int((VOL_GAUCHE+VOL_DROIT)/2)
