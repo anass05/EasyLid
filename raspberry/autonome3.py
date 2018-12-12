@@ -89,12 +89,12 @@ class MySend(Thread):
     # avant voiture
     distanceDetectObstacleAVD = 30
     distanceDetectObstacleAVG = 30
-    distanceDetectObstacleAVC = 150
+    distanceDetectObstacleAVC = 100
     distanceDetectObstacleAVCproche = 30
     #arriere voiture
-    distanceDetectObstacleARD = 100
+    distanceDetectObstacleARD = 75
     distanceDetectObstacleARDproche = 20
-    distanceDetectObstacleARG = 100
+    distanceDetectObstacleARG = 75
     distanceDetectObstacleARGproche = 20
     distanceDetectObstacleARC = 30
 
@@ -262,8 +262,8 @@ class MySend(Thread):
             #------------------------------------------------- CALCUL COMMANDES ----------------------------------------------------
             
             if self.enable:
-                cmd_turn = 50 + int(self.turn*50) | 0x80
-                #print(cmd_turn)
+                cmd_turn = 50 + self.turn*50 | 0x80
+                
                 if MySend.differentielD :
                     cmd_mv_droit = (50 - self.move*self.speed_cmd) | 0x80   #marche arrière
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
@@ -279,7 +279,7 @@ class MySend(Thread):
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
-            
+            print(cmd_turn)
             msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
 
