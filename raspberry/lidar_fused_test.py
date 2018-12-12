@@ -77,7 +77,9 @@ if __name__ == "__main__":
     except OSError:
         print('Cannot find PiCAN board.')
         exit()
+    lidar = RPLidar('/dev/ttyUSB0')
 
+    threadLidar=Lidar(lidar)
 
     #gauche
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
