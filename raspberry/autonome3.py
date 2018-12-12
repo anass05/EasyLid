@@ -251,6 +251,7 @@ class MySend(Thread):
                 self.enable = 1
                 MySend.differentielD = False
                 MySend.differentielG = False
+		print("tout droit")
                 # permet de "rester droit"
                 if (position_volant < VOL_CENTRE-50):
                     self.turn = 0.8
