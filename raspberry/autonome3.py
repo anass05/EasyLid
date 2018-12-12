@@ -102,45 +102,12 @@ class MySend(Thread):
         self.bus = bus
     	
     def run(self):
-        
-        #gauche
-        msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
-        self.bus.send(msg)
-        time.sleep(0.75)
-        msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
-        self.bus.send(msg)
-        time.sleep(0.5)
-        msg1=self.bus.recv()
-        while not (msg1.arbitration_id == MS):
-            msg1=self.bus.recv()
-        VOL_GAUCHE = int.from_bytes(msg1.data[0:2], byteorder='big')
-
-        self.bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
-        time.sleep(1)
-
-        #droit
-        msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
-        self.bus.send(msg)
-        time.sleep(0.75)
-        msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
-        self.bus.send(msg)
-        msg2=self.bus.recv()
-        time.sleep(0.5)
-        while not(msg2.arbitration_id == MS):
-            msg2=self.bus.recv()
-        VOL_DROIT = int.from_bytes(msg2.data[0:2], byteorder='big')
-
-        VOL_CENTRE = int((VOL_GAUCHE+VOL_DROIT)/2)
-
-        print(VOL_DROIT)
-        print(VOL_GAUCHE)
-        print(VOL_CENTRE)
-
+        		
         self.speed_cmd = 30
         self.move = 0
         self.turn = 0
         self.enable = 0
-
+        
         while True :
             
             msg = self.bus.recv()
@@ -318,6 +285,7 @@ class MySend(Thread):
 # Echo server program
 
 
+
 if __name__ == "__main__":
     
     print('Bring up CAN0....')
@@ -330,6 +298,39 @@ if __name__ == "__main__":
     except OSError:
         print('Cannot find PiCAN board.')
         exit()
+
+    
+    #gauche
+    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
+    self.bus.send(msg)
+    time.sleep(0.75)
+    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
+    self.bus.send(msg)
+    time.sleep(0.5)
+    msg1=self.bus.recv()
+    while not (msg1.arbitration_id == MS):
+        msg1=self.bus.recv()
+    VOL_GAUCHE = int.from_bytes(msg1.data[0:2], byteorder='big')
+
+    self.bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+
+    #droit
+    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
+    self.bus.send(msg)
+    time.sleep(0.75)
+    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
+    self.bus.send(msg)
+    msg2=self.bus.recv()
+    time.sleep(0.5)
+    while not(msg2.arbitration_id == MS):
+        msg2=self.bus.recv()
+    VOL_DROIT = int.from_bytes(msg2.data[0:2], byteorder='big')
+
+    VOL_CENTRE = int((VOL_GAUCHE+VOL_DROIT)/2)
+
+    print(VOL_DROIT)
+    print(VOL_GAUCHE)
+    print(VOL_CENTRE)
 
 
     newsend = MySend(bus)
