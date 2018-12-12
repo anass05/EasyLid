@@ -262,32 +262,32 @@ class MySend(Thread):
             #------------------------------------------------- CALCUL COMMANDES ----------------------------------------------------
             
             if self.enable:
-                cmd_turn = 50 + int(self.turn*50) | 0x80
+                #cmd_turn = 50 + int(self.turn*50) | 0x80
                 #print(cmd_turn)
                 if MySend.differentielD :
-                    cmd_mv_droit = (60 - self.move*self.speed_cmd) | 0x80   #marche arrière
+                    cmd_mv_droit = (50 - self.move*self.speed_cmd) | 0x80   #marche arrière
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
                 elif MySend.differentielG:
-                    cmd_mv_droit = (40 + self.move*self.speed_cmd) | 0x80   
+                    cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80   
                     cmd_mv_gauche = (50 - self.move*self.speed_cmd) | 0x80 #marche arrière
                 else:
                     cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
             else:
-                cmd_turn = 50 + int(self.turn*50) & ~0x80
+                #cmd_turn = 50 + int(self.turn*50) & ~0x80
                 cmd_mv_droit = (50 + self.move*self.speed_cmd) & ~0x80
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
             
-            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
+            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, 0,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
 
 
 
 # Echo server program
 
-'''
+
 
 if __name__ == "__main__":
     
@@ -304,7 +304,7 @@ if __name__ == "__main__":
 
 
     #gauche
-    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
+''' msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     time.sleep(0.75)
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
@@ -320,8 +320,7 @@ if __name__ == "__main__":
     #droit
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
     bus.send(msg)
-    time.sleep(0.75)
-    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
+    time.sleep(0.75)    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     msg2=bus.recv()
     time.sleep(0.5)
@@ -333,11 +332,8 @@ if __name__ == "__main__":
 
     print(VOL_DROIT)
     print(VOL_GAUCHE)
-    print(VOL_CENTRE)
-
-
+    print(VOL_CENTRE)'''
     newsend = MySend(bus)
     newsend.start()
-
     newsend.join()
-'''
+
