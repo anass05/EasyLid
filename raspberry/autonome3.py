@@ -116,6 +116,7 @@ class MySend(Thread):
         VOL_GAUCHE = int.from_bytes(msg1.data[0:2], byteorder='big')
 
         self.bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+        time.sleep(1)
 
         #droit
         msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
