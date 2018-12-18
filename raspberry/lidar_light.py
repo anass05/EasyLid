@@ -1,10 +1,10 @@
-'''from rplidar import RPLidar
+from rplidar import RPLidar
 import time
 import sys
 import signal
 from threading import Thread
 import threading
-import os'''
+import os
 
 
 class Lidar(Thread):
