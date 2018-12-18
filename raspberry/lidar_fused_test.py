@@ -1,11 +1,10 @@
 #Lidar Imports
-from rplidar import RPLidar
+'''from rplidar import RPLidar
 import time
 import sys
 import signal
 from threading import Thread
-import threading
-import lidar
+import threading'''
 
 #Can imports
 #sys.path.insert(0,'../../can')
@@ -29,43 +28,20 @@ VOL_GAUCHE=0
 VOL_DROIT=0
 VOL_CENTRE=0
 
-'''
-    Messages envoyés :
-    - ultrason avant gauche
-    header : UFL payload : entier, distance en cm
-    - ultrason avant centre
-    header : UFC payload : entier, distance en cm
-    - ultrason avant droite
-    header : UFR payload : entier, distance en cm
-    - ultrason arriere gauche
-    header : URL payload : entier, distance en cm
-    - ultrason arriere centre
-    header : URC payload : entier, distance en cm
-    - ultrason arriere droite
-    header : URR payload : entier, distance en cm
-    - position volant
-    header : POS payload : entier, valeur brute du capteur
-    - vitesse roue gauche
-    header : SWL payload : entier, *0.01rpm
-    - vitesse roue droite
-    header : SWR payload : entier, *0.01rpm
-    - Niveau de la batterie
-    header : BAT payload : entier, mV
-    - Pitch
-    header : PIT payload : float, angle en degrée
-    - Yaw
-    header : YAW payload : float, angle en degrée
-    - Roll
-    header : ROL payload : float, angle en degrée
-    
-    Messages reçus :
-    - Modification de la vitesse
-    header : SPE payload : valeur entre 0 et 50
-    - Control du volant (droite, gauche)
-    header : STE paylaod : left | right | stop
-    - Contra l de l'avancée
-    header : MOV payload : forward | backward | stop
-    '''
+lidar = RPLidar('/dev/ttyUSB0')
+threadLidar=Lidar(lidar)
+newsend = MySend(bus)
+
+def signal_handler(sig, frame):
+  print('You pressed Ctrl+C!')
+  threadLidar.shutdown_flag.set()
+  newsend.shutdown_flag.set()
+  os.system("cansend can0 010#00000000")
+  time.sleep(5)
+  lidar.stop()
+  lidar.stop_motor()
+  lidar.disconnect()
+
 if __name__ == "__main__":
     print('Bring up CAN0....')
     os.system("sudo /sbin/ip link set can0 down")
@@ -77,9 +53,7 @@ if __name__ == "__main__":
     except OSError:
         print('Cannot find PiCAN board.')
         exit()
-    lidar = RPLidar('/dev/ttyUSB0')
-
-    threadLidar=Lidar(lidar)
+ 
 
     #gauche
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
@@ -114,7 +88,7 @@ if __name__ == "__main__":
     print(VOL_CENTRE)
 
 
-    newsend = MySend(bus)
+ 
     newsend.start()
     threadLidar.start()
     signal.signal(signal.SIGINT, signal_handler)

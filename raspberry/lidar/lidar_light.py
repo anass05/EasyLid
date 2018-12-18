@@ -46,7 +46,7 @@ class Lidar(Thread):
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
        # print('Ultrason %d' % (ULT_AG))
-        if i%10 == 9:
+        if i%5 == 4:
           lidarTab = []
           for i in range(360):
             lidarTab.append(0)
