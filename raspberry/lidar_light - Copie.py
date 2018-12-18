@@ -1,10 +1,10 @@
-'''from rplidar import RPLidar
+from rplidar import RPLidar
 import time
 import sys
 import signal
 from threading import Thread
 import threading
-import os'''
+import os
 
 
 class Lidar(Thread):
@@ -46,7 +46,7 @@ class Lidar(Thread):
       else:
         print('%d: Got %d measurments' % (i, len(scan)))
        # print('Ultrason %d' % (ULT_AG))
-        if i%5 == 4:
+        if i%10 == 9:
           lidarTab = []
           for i in range(360):
             lidarTab.append(0)
@@ -63,8 +63,10 @@ class Lidar(Thread):
             savedTurns=0
             outputFile = open(self.type+'/'+fileName,'w')
 
+lidar = RPLidar('/dev/ttyUSB0')
 
-'''
+threadLidar=Lidar(lidar)
+
 def signal_handler(sig, frame):
   print('You pressed Ctrl+C!')
   threadLidar.shutdown_flag.set()
@@ -77,4 +79,3 @@ if __name__ == "__main__":
   threadLidar.start()
   signal.signal(signal.SIGINT, signal_handler)
   threadLidar.join()
-'''
