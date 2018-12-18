@@ -27,7 +27,16 @@ OM2 = 0x102
 VOL_GAUCHE=0
 VOL_DROIT=0
 VOL_CENTRE=0
+print('Bring up CAN0....')
+os.system("sudo /sbin/ip link set can0 down")
+os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
+time.sleep(0.1)
 
+try:
+    bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+except OSError:
+    print('Cannot find PiCAN board.')
+    exit()
 lidar = RPLidar('/dev/ttyUSB0')
 threadLidar=Lidar(lidar)
 newsend = MySend(bus)
@@ -43,16 +52,7 @@ def signal_handler(sig, frame):
   lidar.disconnect()
 
 if __name__ == "__main__":
-    print('Bring up CAN0....')
-    os.system("sudo /sbin/ip link set can0 down")
-    os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
-    time.sleep(0.1)
     
-    try:
-        bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
-    except OSError:
-        print('Cannot find PiCAN board.')
-        exit()
  
 
     #gauche
