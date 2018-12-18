@@ -63,10 +63,8 @@ class Lidar(Thread):
             savedTurns=0
             outputFile = open(self.type+'/'+fileName,'w')
 
-lidar = RPLidar('/dev/ttyUSB0')
 
-threadLidar=Lidar(lidar)
-
+'''
 def signal_handler(sig, frame):
   print('You pressed Ctrl+C!')
   threadLidar.shutdown_flag.set()
@@ -79,3 +77,4 @@ if __name__ == "__main__":
   threadLidar.start()
   signal.signal(signal.SIGINT, signal_handler)
   threadLidar.join()
+'''
