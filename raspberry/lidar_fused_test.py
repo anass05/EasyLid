@@ -37,7 +37,7 @@ try:
 except OSError:
     print('Cannot find PiCAN board.')
     exit()
-lidar = RPLidar('/dev/LIDAR')
+lidar = RPLidar('/dev/ttyUSB0')
 threadLidar=Lidar(lidar)
 newsend = MySend(bus)
 
