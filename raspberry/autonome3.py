@@ -6,6 +6,8 @@ import time
 import can
 import os
 import struct
+import threading
+
 
 HOST = ''                # Symbolic name meaning all available interfaces
 PORT = 6666              # Arbitrary non-privileged port
