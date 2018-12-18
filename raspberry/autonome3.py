@@ -100,7 +100,8 @@ class MySend(Thread):
     def __init__(self, bus):
         Thread.__init__(self)
         self.bus = bus
-    	
+	    self.shutdown_flag = threading.Event()
+
     def run(self):
         		
         self.speed_cmd = 30
@@ -108,7 +109,7 @@ class MySend(Thread):
         self.turn = 0
         self.enable = 0
         
-        while True :
+        while not(self.shutdown_flag.is_set()):
             
             msg = self.bus.recv()
             
