@@ -1,10 +1,10 @@
 #Lidar Imports
-'''from rplidar import RPLidar
+from rplidar import RPLidar
 import time
 import sys
 import signal
 from threading import Thread
-import threading'''
+import threading
 
 #Can imports
 #sys.path.insert(0,'../../can')
