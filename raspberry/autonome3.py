@@ -253,16 +253,16 @@ class MySend(Thread):
                 MySend.differentielG = False
                 # permet de "rester droit"
                 if (position_volant < VOL_CENTRE-50):
-                    self.turn = 0.8
+                    self.turn = 1
                 elif (position_volant > VOL_CENTRE+50):
-                    self.turn = -0.8
+                    self.turn = -1
                 else:
                     self.turn = 0
 
             #------------------------------------------------- CALCUL COMMANDES ----------------------------------------------------
             
             if self.enable:
-                #cmd_turn = 50 + int(self.turn*50) | 0x80
+                cmd_turn = 50 + int(self.turn*50) | 0x80
                 #print(cmd_turn)
                 if MySend.differentielD :
                     cmd_mv_droit = (50 - self.move*self.speed_cmd) | 0x80   #marche arrière
@@ -274,13 +274,13 @@ class MySend(Thread):
                     cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
             else:
-                #cmd_turn = 50 + int(self.turn*50) & ~0x80
+                cmd_turn = 50 + int(self.turn*50) & ~0x80
                 cmd_mv_droit = (50 + self.move*self.speed_cmd) & ~0x80
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
             
-            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, 0,0,0,0,0,0],extended_id=False)
+            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
 
 
@@ -288,7 +288,7 @@ class MySend(Thread):
 # Echo server program
 
 
-
+'''
 if __name__ == "__main__":
     
     print('Bring up CAN0....')
@@ -305,8 +305,7 @@ if __name__ == "__main__":
 
 
     #gauche
-    
-    ''' 
+ 
 	msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     time.sleep(0.75)
@@ -336,9 +335,10 @@ if __name__ == "__main__":
     print(VOL_DROIT)
     print(VOL_GAUCHE)
     print(VOL_CENTRE)
-    '''
+
     
     newsend = MySend(bus)
     newsend.start()
     newsend.join()
+    '''
 
