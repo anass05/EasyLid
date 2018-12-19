@@ -208,14 +208,14 @@ class MySend(Thread):
             MySend.detectObstacleAVCold = MySend.detectObstacleAVC #pour l'instant on regarde que les obstacles en face
 
             # detection obstacle proche dans ce cas on s'arrête
-            if MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche or MySend.detectObstacleARC:
+            if MySend.detectObstacleARC:
                 self.move = 0
                 self.enable = 0
                 MySend.differentielD = False
                 MySend.differentielG = False
 
             # cul de sac -> reculer
-            elif MySend.detectObstacleAVC and MySend.detectObstacleARG and MySend.detectObstacleARD:
+            elif MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche:
                 self.move = -1
                 self.enable = 1
                 MySend.differentielD = False
