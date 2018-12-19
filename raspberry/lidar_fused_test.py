@@ -30,6 +30,7 @@ VOL_CENTRE=0
 print('Bring up CAN0....')
 os.system("sudo /sbin/ip link set can0 down")
 os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
+os.system("sudo ifconfig can0 txqueuelen 1000")
 time.sleep(0.1)
 
 try:
