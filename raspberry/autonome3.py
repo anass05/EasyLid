@@ -294,6 +294,7 @@ if __name__ == "__main__":
     print('Bring up CAN0....')
     os.system("sudo /sbin/ip link set can0 down")
     os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
+    os.system("sudo ifconfig can0 txqueuelen 1000")
     time.sleep(0.1)
     
     try:
@@ -304,6 +305,7 @@ if __name__ == "__main__":
 
 
     #gauche
+    
 ''' msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     time.sleep(0.75)
@@ -332,7 +334,8 @@ if __name__ == "__main__":
 
     print(VOL_DROIT)
     print(VOL_GAUCHE)
-    print(VOL_CENTRE)'''
+    print(VOL_CENTRE)
+    '''
     newsend = MySend(bus)
     newsend.start()
     newsend.join()
