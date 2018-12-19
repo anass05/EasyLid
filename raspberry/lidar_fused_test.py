@@ -55,7 +55,7 @@ def signal_handler(sig, frame):
 if __name__ == "__main__":
     
  
-
+    '''
     #gauche
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
     bus.send(msg)
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     print(VOL_DROIT)
     print(VOL_GAUCHE)
     print(VOL_CENTRE)
-
+    '''
 
  
     newsend.start()
