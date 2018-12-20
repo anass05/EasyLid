@@ -89,19 +89,14 @@ class MySend(Thread):
     # avant voiture
     distanceDetectObstacleAVD = 30
     distanceDetectObstacleAVG = 30
-    distanceDetectObstacleAVC = 100
+    distanceDetectObstacleAVC = 150
     distanceDetectObstacleAVCproche = 30
     #arriere voiture
-    distanceDetectObstacleARD = 75
+    distanceDetectObstacleARD = 100
     distanceDetectObstacleARDproche = 20
-    distanceDetectObstacleARG = 75
+    distanceDetectObstacleARG = 100
     distanceDetectObstacleARGproche = 20
     distanceDetectObstacleARC = 30
-
-
-    # etats
-    etatActuel = 0 
-    etatPrecedent = 0
 
     
     def __init__(self, bus):
@@ -213,20 +208,18 @@ class MySend(Thread):
             MySend.detectObstacleAVCold = MySend.detectObstacleAVC #pour l'instant on regarde que les obstacles en face
 
             # detection obstacle proche dans ce cas on s'arrête
-            if MySend.detectObstacleARC:
+            if MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche or MySend.detectObstacleARC:
                 self.move = 0
                 self.enable = 0
                 MySend.differentielD = False
                 MySend.differentielG = False
-                MySend.etatActuel = 0
 
             # cul de sac -> reculer
-            elif MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche:
+            elif MySend.detectObstacleAVC and MySend.detectObstacleARG and MySend.detectObstacleARD:
                 self.move = -1
                 self.enable = 1
                 MySend.differentielD = False
                 MySend.differentielG = False
-                MySend.etatActuel = 1
 
             # tourner a droite
             elif (MySend.detectObstacleAVC and (MySend.detectObstacleARG or MySend.lastActionD) and not(MySend.detectObstacleARD) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
@@ -239,8 +232,7 @@ class MySend(Thread):
                     self.turn = -1
                 else:
                     self.turn = 0
-                MySend.etatActuel = 2
-                
+                    
             #tourner à gauche
             elif (MySend.detectObstacleAVC and (MySend.detectObstacleARD or MySend.lastActionG) and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
@@ -252,34 +244,31 @@ class MySend(Thread):
                     self.turn = 1
                 else:
                     self.turn = 0
-                MySend.etatActuel = 3
-                
+                                    
             # si pas d'obstacle on va tout droit
             else:
-                print("tout droit")
                 self.move = 1
                 self.enable = 1
                 MySend.differentielD = False
                 MySend.differentielG = False
                 # permet de "rester droit"
                 if (position_volant < VOL_CENTRE-50):
-                    self.turn = 1
+                    self.turn = 0.8
                 elif (position_volant > VOL_CENTRE+50):
-                    self.turn = -1
+                    self.turn = -0.8
                 else:
                     self.turn = 0
-                MySend.etatActuel = 4
 
             #------------------------------------------------- CALCUL COMMANDES ----------------------------------------------------
             
             if self.enable:
-                cmd_turn = 50 + self.turn*50 | 0x80
-                
+                cmd_turn = 50 + int(self.turn*50) | 0x80
+                #print(cmd_turn)
                 if MySend.differentielD :
-                    cmd_mv_droit = (50 - self.move*self.speed_cmd) | 0x80   #marche arrière
+                    cmd_mv_droit = (60 - self.move*self.speed_cmd) | 0x80   #marche arrière
                     cmd_mv_gauche = (50 + self.move*self.speed_cmd) | 0x80
                 elif MySend.differentielG:
-                    cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80   
+                    cmd_mv_droit = (40 + self.move*self.speed_cmd) | 0x80   
                     cmd_mv_gauche = (50 - self.move*self.speed_cmd) | 0x80 #marche arrière
                 else:
                     cmd_mv_droit = (50 + self.move*self.speed_cmd) | 0x80
@@ -290,23 +279,21 @@ class MySend(Thread):
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
-            print(cmd_turn)
-            if MySend.etatActuel != MySend.etatPrecedent:
-                msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
-                self.bus.send(msg)
-            MySend.etatPrecedent = MySend.etatActuel
+            
+            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
+            self.bus.send(msg)
+
 
 
 # Echo server program
 
-
 '''
+
 if __name__ == "__main__":
     
     print('Bring up CAN0....')
     os.system("sudo /sbin/ip link set can0 down")
     os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
-    os.system("sudo ifconfig can0 txqueuelen 1000")
     time.sleep(0.1)
     
     try:
@@ -317,8 +304,7 @@ if __name__ == "__main__":
 
 
     #gauche
- 
-	msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
+    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     time.sleep(0.75)
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
@@ -334,7 +320,8 @@ if __name__ == "__main__":
     #droit
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
     bus.send(msg)
-    time.sleep(0.75)    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
+    time.sleep(0.75)
+    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     msg2=bus.recv()
     time.sleep(0.5)
@@ -348,9 +335,9 @@ if __name__ == "__main__":
     print(VOL_GAUCHE)
     print(VOL_CENTRE)
 
-    
+
     newsend = MySend(bus)
     newsend.start()
-    newsend.join()
-    '''
 
+    newsend.join()
+'''
