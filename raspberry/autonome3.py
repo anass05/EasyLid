@@ -68,16 +68,24 @@ class MySend(Thread):
     # boolean 
     # avant voiture
     detectObstacleAVD = False
+    detectObstacleAVDold = False
     detectObstacleAVG = False
+    detectObstacleAVGold = False
     detectObstacleAVC = False
     detectObstacleAVCold = False
     detectObstacleAVCproche = False
+    detectObstacleAVCprocheold = False
     # arriere voiture
     detectObstacleARD = False
+    detectObstacleARDold = False
     detectObstacleARDproche = False
+    detectObstacleARDprocheold = False
     detectObstacleARG = False
+    detectObstacleARGold = False
     detectObstacleARGproche = False
+    detectObstacleARGprocheold = False
     detectObstacleARC = False
+    detectObstacleARCold = False
     
     differentielD = False
     differentielG = False
@@ -209,23 +217,30 @@ class MySend(Thread):
             #------------------------------------------------- DETECTION OBSTACLE ----------------------------------------------------
             
             MySend.detectObstacleAVCold = MySend.detectObstacleAVC #pour l'instant on regarde que les obstacles en face
+            MySend.detectObstacleAVDold = MySend.detectObstacleAVD
+            MySend.detectObstacleAVGold = MySend.detectObstacleAVG
+            MySend.detectObstacleAVCprocheold = MySend.detectObstacleAVCproche
+            MySend.detectObstacleARDold = MySend.detectObstacleARD
+            MySend.detectObstacleARDprocheold = MySend.detectObstacleARDproche
+            MySend.detectObstacleARGold = MySend.detectObstacleARG
+            MySend.detectObstacleARCold = MySend.detectObstacleARC
 
             # detection obstacle proche dans ce cas on s'arrête
-            if MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche or MySend.detectObstacleARC:
+            if (MySend.detectObstacleAVG and MySend.detectObstacleAVGold == MySend.detectObstacleAVG) or (MySend.detectObstacleAVD and MySend.detectObstacleAVDold == MySend.detectObstacleAVD) or (MySend.detectObstacleAVCproche and MySend.detectObstacleAVCprocheold == MySend.detectObstacleAVCproche) or (MySend.detectObstacleARGproche and MySend.detectObstacleARGprocheold == MySend.detectObstacleARGproche) or (MySend.detectObstacleARDproche and MySend.detectObstacleARDprocheold == MySend.detectObstacleARDproche) or (MySend.detectObstacleARC and MySend.detectObstacleARCold == MySend.detectObstacleARC):
                 self.move = 0
                 self.enable = 0
                 MySend.differentielD = False
                 MySend.differentielG = False
 
             # cul de sac -> reculer
-            elif MySend.detectObstacleAVC and MySend.detectObstacleARG and MySend.detectObstacleARD:
+            elif (MySend.detectObstacleAVC and MySend.detectObstacleAVCold == MySend.detectObstacleAVC) and (MySend.detectObstacleARG and MySend.detectObstacleARGold == MySend.detectObstacleARG) and (MySend.detectObstacleARD and MySend.detectObstacleARDold == MySend.detectObstacleARD):
                 self.move = -1
                 self.enable = 1
                 MySend.differentielD = False
                 MySend.differentielG = False
 
             # tourner a droite
-            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARG or (MySend.lastActionD and not(MySend.detectObstacleARD))) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+            elif (MySend.detectObstacleAVC and MySend.detectObstacleAVC == MySend.detectObstacleAVCold) and ((MySend.detectObstacleARG and MySend.detectObstacleARG == MySend.detectObstacleARGold)) or (MySend.lastActionD and not(MySend.detectObstacleARD) and MySend.detectObstacleARD == MySend.detectObstacleARDold):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielD = True
@@ -237,7 +252,7 @@ class MySend(Thread):
                     self.turn = 0
                     
             #tourner à gauche
-            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARD or (MySend.lastActionG and not(MySend.detectObstacleARG))) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+            elif (MySend.detectObstacleAVC and MySend.detectObstacleAVC == MySend.detectObstacleAVCold) and ((MySend.detectObstacleARD and MySend.detectObstacleARD == MySend.detectObstacleARDold)) or (MySend.lastActionG and not(MySend.detectObstacleARG) and MySend.detectObstacleARG == MySend.detectObstacleARGold):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielG = True
