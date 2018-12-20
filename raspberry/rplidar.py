@@ -51,7 +51,7 @@ SCAN_TYPE = 129
 
 #Constants & Command to start A2 motor
 MAX_MOTOR_PWM = 1023
-DEFAULT_MOTOR_PWM = 300
+DEFAULT_MOTOR_PWM = 360
 SET_PWM_BYTE = b'\xF0'
 
 _HEALTH_STATUSES = {
