@@ -166,8 +166,8 @@ class MySend(Thread):
                 if distance<MySend.distanceDetectObstacleARGproche and distance > 0:
                     MySend.detectObstacleARGproche = True
                 elif distance < MySend.distanceDetectObstacleARG:
-                MySend.detectObstacleARG = True
-                MySend.detectObstacleARGproche = False
+                    MySend.detectObstacleARG = True
+                    MySend.detectObstacleARGproche = False
                 elif distance == 0:
                     None 
                 else:
