@@ -149,7 +149,7 @@ class MySend(Thread):
                 message = "URC:" + str(distance)+ ";"
                 if distance<MySend.distanceDetectObstacleAVCproche and distance > 0:
                     MySend.detectObstacleAVCproche = True
-                elif distance < MySend.distanceDetectObstacleAVC
+                elif distance < MySend.distanceDetectObstacleAVC:
                     MySend.detectObstacleAVC = True
                     MySend.detectObstacleAVCproche = False
                 elif distance == 0:
@@ -254,12 +254,11 @@ class MySend(Thread):
                 self.enable = 1
                 MySend.differentielD = False
                 MySend.differentielG = False
-                print("tout droit")
                 # permet de "rester droit"
                 if (position_volant < VOL_CENTRE-50):
-                    self.turn = 1
+                    self.turn = 0.8
                 elif (position_volant > VOL_CENTRE+50):
-                    self.turn = -1
+                    self.turn = -0.8
                 else:
                     self.turn = 0
 
@@ -291,7 +290,7 @@ class MySend(Thread):
 
 # Echo server program
 
-
+'''
 
 if __name__ == "__main__":
     
@@ -344,4 +343,4 @@ if __name__ == "__main__":
     newsend.start()
 
     newsend.join()
-
+'''
