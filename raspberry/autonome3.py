@@ -225,7 +225,7 @@ class MySend(Thread):
                 MySend.differentielG = False
 
             # tourner a droite
-            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARG or MySend.lastActionD) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARG or (MySend.lastActionD and not(MySend.detectObstacleARD)) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielD = True
@@ -237,7 +237,7 @@ class MySend(Thread):
                     self.turn = 0
                     
             #tourner à gauche
-            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARD or MySend.lastActionG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
+            elif (MySend.detectObstacleAVC and (MySend.detectObstacleARD or (MySend.lastActionG and not(MySend.detectObstacleARG)) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielG = True
