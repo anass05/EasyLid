@@ -290,7 +290,7 @@ class MySend(Thread):
 
 # Echo server program
 
-'''
+
 
 if __name__ == "__main__":
     
@@ -343,4 +343,4 @@ if __name__ == "__main__":
     newsend.start()
 
     newsend.join()
-'''
+
