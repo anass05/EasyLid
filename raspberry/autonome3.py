@@ -98,6 +98,11 @@ class MySend(Thread):
     distanceDetectObstacleARGproche = 20
     distanceDetectObstacleARC = 30
 
+
+    # etats
+    etatActuel = 0 
+    etatPrecedent = 0
+
     
     def __init__(self, bus):
         Thread.__init__(self)
@@ -213,6 +218,7 @@ class MySend(Thread):
                 self.enable = 0
                 MySend.differentielD = False
                 MySend.differentielG = False
+                MySend.etatActuel = 0
 
             # cul de sac -> reculer
             elif MySend.detectObstacleAVG or MySend.detectObstacleAVD or MySend.detectObstacleAVCproche or MySend.detectObstacleARGproche or MySend.detectObstacleARDproche:
@@ -220,6 +226,7 @@ class MySend(Thread):
                 self.enable = 1
                 MySend.differentielD = False
                 MySend.differentielG = False
+                MySend.etatActuel = 1
 
             # tourner a droite
             elif (MySend.detectObstacleAVC and (MySend.detectObstacleARG or MySend.lastActionD) and not(MySend.detectObstacleARD) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
@@ -232,7 +239,8 @@ class MySend(Thread):
                     self.turn = -1
                 else:
                     self.turn = 0
-                    
+                MySend.etatActuel = 2
+                
             #tourner à gauche
             elif (MySend.detectObstacleAVC and (MySend.detectObstacleARD or MySend.lastActionG) and not(MySend.detectObstacleARG) and MySend.detectObstacleAVC == MySend.detectObstacleAVCold):
                 self.move = 1
@@ -244,9 +252,11 @@ class MySend(Thread):
                     self.turn = 1
                 else:
                     self.turn = 0
-                                    
+                MySend.etatActuel = 3
+                
             # si pas d'obstacle on va tout droit
             else:
+                print("tout droit")
                 self.move = 1
                 self.enable = 1
                 MySend.differentielD = False
@@ -258,6 +268,7 @@ class MySend(Thread):
                     self.turn = -1
                 else:
                     self.turn = 0
+                MySend.etatActuel = 4
 
             #------------------------------------------------- CALCUL COMMANDES ----------------------------------------------------
             
@@ -280,9 +291,10 @@ class MySend(Thread):
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
             print(cmd_turn)
-            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
-            self.bus.send(msg)
-
+            if MySend.etatActuel != MySend.etatPrecedent:
+                msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
+                self.bus.send(msg)
+            MySend.etatPrecedent = MySend.etatActuel
 
 
 # Echo server program
