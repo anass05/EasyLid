@@ -50,7 +50,7 @@ class Lidar(Thread):
        # print('Ultrason %d' % (ULT_AG))
         if counter > 2:
           lidarTab = []
-          print("saving")
+          #print("saving")
           for i in range(360):
             lidarTab.append(0)
           
@@ -65,7 +65,7 @@ class Lidar(Thread):
             fileName=time.strftime("%d%m%Y%H%M%S")
             savedTurns=0
             outputFile = open(self.type+'/'+fileName,'w')
-            #print("saved")
+            print("saved")
 
 
 '''
