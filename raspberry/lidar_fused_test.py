@@ -55,32 +55,32 @@ def signal_handler(sig, frame):
 if __name__ == "__main__":
     
  
-
-    #gauche
-    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
-    bus.send(msg)
-    time.sleep(0.75)
-    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
-    bus.send(msg)
-    time.sleep(0.5)
-    msg1=bus.recv()
-    while not (msg1.arbitration_id == MS):
+    while((VOL_DROIT-VOL_GAUCHE) < 200):
+        #gauche
+        msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
+        bus.send(msg)
+        time.sleep(0.75)
+        msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
+        bus.send(msg)
+        time.sleep(0.5)
         msg1=bus.recv()
-    VOL_GAUCHE = int.from_bytes(msg1.data[0:2], byteorder='big')
+        while not (msg1.arbitration_id == MS):
+            msg1=bus.recv()
+        VOL_GAUCHE = int.from_bytes(msg1.data[0:2], byteorder='big')
 
-    bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+        bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
 
-    #droit
-    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
-    bus.send(msg)
-    time.sleep(0.75)
-    msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
-    bus.send(msg)
-    msg2=bus.recv()
-    time.sleep(0.5)
-    while not(msg2.arbitration_id == MS):
+        #droit
+        msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
+        bus.send(msg)
+        time.sleep(0.75)
+        msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
+        bus.send(msg)
         msg2=bus.recv()
-    VOL_DROIT = int.from_bytes(msg2.data[0:2], byteorder='big')
+        time.sleep(0.5)
+        while not(msg2.arbitration_id == MS):
+            msg2=bus.recv()
+        VOL_DROIT = int.from_bytes(msg2.data[0:2], byteorder='big')
 
     VOL_CENTRE = int((VOL_GAUCHE+VOL_DROIT)/2)
 
