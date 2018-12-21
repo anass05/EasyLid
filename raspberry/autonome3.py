@@ -100,9 +100,9 @@ class MySend(Thread):
     distanceDetectObstacleAVC = 150
     distanceDetectObstacleAVCproche = 30
     #arriere voiture
-    distanceDetectObstacleARD = 100
+    distanceDetectObstacleARD = 75
     distanceDetectObstacleARDproche = 20
-    distanceDetectObstacleARG = 100
+    distanceDetectObstacleARG = 75
     distanceDetectObstacleARGproche = 20
     distanceDetectObstacleARC = 30
 
@@ -129,12 +129,13 @@ class MySend(Thread):
             st = ""
             
             #------------------------------------------------- LECTURE MESSAGE ----------------------------------------------------
-            
+            #000
             if msg.arbitration_id == US1:
                 
                 # ultrason avant gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
-                message = "UFL:" + str(distance) + ";"
+                message = "AVG:" + str(distance) + ";"
+                print(message)
                 if distance < MySend.distanceDetectObstacleAVG and distance > 0:
                     MySend.detectObstacleAVG=True
                 elif distance == 0:
@@ -144,7 +145,8 @@ class MySend(Thread):
                 
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
-                message = "UFR:" + str(distance)+ ";"
+                message = "AVD:" + str(distance)+ ";"
+                print(message)
                 if distance < MySend.distanceDetectObstacleAVD and distance > 0:
                     MySend.detectObstacleAVD = True
                 elif distance == 0:
@@ -154,9 +156,11 @@ class MySend(Thread):
             
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
-                message = "URC:" + str(distance)+ ";"
+                message = "AVC:" + str(distance)+ ";"
+                print(message)
                 if distance<MySend.distanceDetectObstacleAVCproche and distance > 0:
                     MySend.detectObstacleAVCproche = True
+                    MySend.detectObstacleAVC = False
                 elif distance < MySend.distanceDetectObstacleAVC:
                     MySend.detectObstacleAVC = True
                     MySend.detectObstacleAVCproche = False
@@ -165,14 +169,16 @@ class MySend(Thread):
                 else:
                     MySend.detectObstacleAVC = False
                     MySend.detectObstacleAVCproche = False
-                    
+            #001        
             elif msg.arbitration_id == US2:
                 
                 # ultrason arriere gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
-                message = "URL:" + str(distance)+ ";"
+                message = "ARG:" + str(distance)+ ";"
+                print(message)
                 if distance<MySend.distanceDetectObstacleARGproche and distance > 0:
                     MySend.detectObstacleARGproche = True
+                    MySend.detectObstacleARG = False
                 elif distance < MySend.distanceDetectObstacleARG:
                     MySend.detectObstacleARG = True
                     MySend.detectObstacleARGproche = False
@@ -185,9 +191,11 @@ class MySend(Thread):
                 
                 # ultrason arriere droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
-                message = "URR:" + str(distance)+ ";"
+                message = "ARD:" + str(distance)+ ";"
+                print(message)
                 if distance<MySend.distanceDetectObstacleARDproche and distance > 0:
                     MySend.detectObstacleARDproche = True
+                    MySend.detectObstacleARD = False
                 elif distance < MySend.distanceDetectObstacleARD:
                     MySend.detectObstacleARD = True
                     MySend.detectObstacleARDproche = False
@@ -200,14 +208,15 @@ class MySend(Thread):
                 
                 # ultrason arriere centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
-                message = "UFC:" + str(distance)+ ";"
+                message = "ARC:" + str(distance)+ ";"
+                print(message)
                 if distance < MySend.distanceDetectObstacleARC and distance > 0:
                     MySend.detectObstacleARC = True
                 elif distance == 0:
                     None
                 else:
                     MySend.detectObstacleARC = False       
-
+            #100 
             elif msg.arbitration_id == MS:
                 # position volant
                 position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
@@ -224,6 +233,8 @@ class MySend(Thread):
             ARDOK = MySend.detectObstacleARDold == MySend.detectObstacleARD
             ARDprocheOK = MySend.detectObstacleARDprocheold == MySend.detectObstacleARDproche
             ARCOK = MySend.detectObstacleARCold == MySend.detectObstacleARC
+
+            
             # detection obstacle proche dans ce cas on s'arrête
             if (MySend.detectObstacleAVG and AVGOK) or (MySend.detectObstacleAVD and AVDOK) or (MySend.detectObstacleAVCproche and AVCprocheOK) or (MySend.detectObstacleARGproche and ARGprocheOK) or (MySend.detectObstacleARDproche and ARDprocheOK) or (MySend.detectObstacleARC and ARCOK):
                 self.move = 0
@@ -239,7 +250,7 @@ class MySend(Thread):
                 MySend.differentielG = False
 
             # tourner a droite
-            elif (MySend.detectObstacleAVC and AVCOK) and ((MySend.detectObstacleARG and ARGOK) or (MySend.lastActionD and not(MySend.detectObstacleARD) and ARDOK)):
+            elif (MySend.detectObstacleAVC and AVCOK and ((MySend.detectObstacleARG and ARGOK) or (MySend.lastActionD and not(MySend.detectObstacleARD) and ARDOK)):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielD = True
@@ -251,7 +262,7 @@ class MySend(Thread):
                     self.turn = 0
                     
             #tourner à gauche
-            elif (MySend.detectObstacleAVC and AVCOK) and ((MySend.detectObstacleARD and ARDOK) or (MySend.lastActionG and not(MySend.detectObstacleARG) and ARGOK)):
+            elif (MySend.detectObstacleAVC and AVCOK and ((MySend.detectObstacleARD and ARDOK) or (MySend.lastActionG and not(MySend.detectObstacleARG) and ARGOK)):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielG = True
