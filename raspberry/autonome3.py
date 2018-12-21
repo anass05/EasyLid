@@ -231,7 +231,7 @@ class MySend(Thread):
                 MySend.differentielG = False
 
             # tourner a droite
-            elif (MySend.detectObstacleAVC and MySend.detectObstacleAVC == MySend.detectObstacleAVCold) and not(MySend.detectObstacleARD) and MySend.detectObstacleARD == MySend.detectObstacleARDold) and ((MySend.detectObstacleARG and MySend.detectObstacleARG == MySend.detectObstacleARGold) or (MySend.lastActionD)):
+            elif (MySend.detectObstacleAVC and MySend.detectObstacleAVC == MySend.detectObstacleAVCold) and not(MySend.detectObstacleARD and MySend.detectObstacleARD == MySend.detectObstacleARDold) and ((MySend.detectObstacleARG and MySend.detectObstacleARG == MySend.detectObstacleARGold) or (MySend.lastActionD)):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielD = True
@@ -243,7 +243,7 @@ class MySend(Thread):
                     self.turn = 0
                     
             #tourner à gauche
-            elif (MySend.detectObstacleAVC and MySend.detectObstacleAVC == MySend.detectObstacleAVCold) and not(MySend.detectObstacleARG) and MySend.detectObstacleARG == MySend.detectObstacleARGold) and ((MySend.detectObstacleARD and MySend.detectObstacleARD == MySend.detectObstacleARDold) or (MySend.lastActionG)):
+            elif (MySend.detectObstacleAVC and MySend.detectObstacleAVC == MySend.detectObstacleAVCold) and not(MySend.detectObstacleARG and MySend.detectObstacleARG == MySend.detectObstacleARGold) and ((MySend.detectObstacleARD and MySend.detectObstacleARD == MySend.detectObstacleARDold) or (MySend.lastActionG)):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielG = True
