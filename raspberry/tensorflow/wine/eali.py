@@ -73,7 +73,7 @@ the_max = non_existing_test.max()
 if train_max > the_max:
     the_max = train_max
     
-non_existing_test /= the_max
+#non_existing_test /= the_max
 
 predictions = model.predict(non_existing_test)
 
