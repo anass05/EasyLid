@@ -1,8 +1,10 @@
+import os
 import numpy as np
 from sklearn.utils import shuffle
 from sklearn.model_selection  import train_test_split
 import tensorflow as tf
 from tensorflow import keras
+
 
 
 leaf = np.loadtxt("F:/studies/insa/projet/wine/input/leaf/feuille.csv",dtype=np.float, delimiter=",")
@@ -48,11 +50,26 @@ print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
 
-model = keras.Sequential([keras.layers.Flatten(input_shape=(360,)),keras.layers.Dense(128, activation=tf.nn.relu),keras.layers.Dense(2, activation=tf.nn.softmax)])
+model = keras.Sequential([
+        keras.layers.Flatten(input_shape=(360,)),
+        keras.layers.Dense(128, activation=tf.nn.relu),
+        keras.layers.Dense(2, activation=tf.nn.softmax)
+        ])
 
-model.compile(optimizer=tf.train.AdamOptimizer(), loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 
-model.fit(X_train, y_train, epochs=10)
+#model.compile(optimizer=tf.train.AdamOptimizer(), loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+model.compile(optimizer=tf.keras.optimizers.Adam(lr=0.001), loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+
+checkpoint_path = "F:/studies/insa/projet/wine/cp.ckpt"
+checkpoint_dir = os.path.dirname(checkpoint_path)
+
+# Create checkpoint callback
+cp_callback = tf.keras.callbacks.ModelCheckpoint(checkpoint_path, 
+                                                 save_weights_only=True,
+                                                 verbose=1)
+
+
+model.fit(X_train, y_train, epochs=10,callbacks = [cp_callback])
 
 test_loss, test_acc = model.evaluate(X_test, y_test)
 
@@ -67,6 +84,11 @@ for item in y_test:
         print(str(y_test[i]) + '->'+ str(predictions[i].argmax()))
     i += 1
 
+#saving model    
+#model.save('F:/studies/insa/projet/wine/model.h5', overwrite=True)
+
+model.summary()
+
 non_existing_test = np.loadtxt("F:/studies/insa/projet/wine/input/test/test.csv",dtype=np.float, delimiter=",")
 the_max = non_existing_test.max()
 
@@ -76,5 +98,3 @@ if train_max > the_max:
 #non_existing_test /= the_max
 
 predictions = model.predict(non_existing_test)
-
-
