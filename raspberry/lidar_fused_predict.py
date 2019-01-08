@@ -38,8 +38,8 @@ except OSError:
     print('Cannot find PiCAN board.')
     exit()
 lidar = RPLidar('/dev/ttyUSB0')
-threadLidar=Lidar(lidar)
-newsend = MySend(bus)
+threadLidar=Lidar(lidar, leafStop)
+newsend = MySend(bus, leafStop)
 
 def signal_handler(sig, frame):
   print('You pressed Ctrl+C!')
