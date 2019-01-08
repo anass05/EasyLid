@@ -88,7 +88,6 @@ class Lidar(Thread):
               time.sleep(5)
               self.lidar.stop()
               self.lidar.stop_motor()
-              self.lidar.disconnect()
 
           
           '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
