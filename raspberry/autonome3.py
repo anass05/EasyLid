@@ -123,8 +123,8 @@ class MySend(Thread):
             
             msg = self.bus.recv()
             
-            # print(msg.arbitration_id, msg.data)
-            # print("Reading")
+            ##print(msg.arbitration_id, msg.data)
+            ##print("Reading")
             
             st = ""
             
@@ -135,7 +135,7 @@ class MySend(Thread):
                 # ultrason avant gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
                 message = "AVG:" + str(distance) + ";"
-                print(message)
+               #print(message)
                 if distance < MySend.distanceDetectObstacleAVG and distance > 0:
                     MySend.detectObstacleAVG=True
                 elif distance == 0:
@@ -146,7 +146,7 @@ class MySend(Thread):
                 # ultrason avant droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "AVD:" + str(distance)+ ";"
-                print(message)
+               #print(message)
                 if distance < MySend.distanceDetectObstacleAVD and distance > 0:
                     MySend.detectObstacleAVD = True
                 elif distance == 0:
@@ -157,7 +157,7 @@ class MySend(Thread):
                 # ultrason avant centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "AVC:" + str(distance)+ ";"
-                print(message)
+               #print(message)
                 if distance<MySend.distanceDetectObstacleAVCproche and distance > 0:
                     MySend.detectObstacleAVCproche = True
                     MySend.detectObstacleAVC = False
@@ -175,7 +175,7 @@ class MySend(Thread):
                 # ultrason arriere gauche
                 distance = int.from_bytes(msg.data[0:2], byteorder='big')
                 message = "ARG:" + str(distance)+ ";"
-                print(message)
+               #print(message)
                 if distance<MySend.distanceDetectObstacleARGproche and distance > 0:
                     MySend.detectObstacleARGproche = True
                     MySend.detectObstacleARG = False
@@ -192,7 +192,7 @@ class MySend(Thread):
                 # ultrason arriere droit
                 distance = int.from_bytes(msg.data[2:4], byteorder='big')
                 message = "ARD:" + str(distance)+ ";"
-                print(message)
+               #print(message)
                 if distance<MySend.distanceDetectObstacleARDproche and distance > 0:
                     MySend.detectObstacleARDproche = True
                     MySend.detectObstacleARD = False
@@ -209,7 +209,7 @@ class MySend(Thread):
                 # ultrason arriere centre
                 distance = int.from_bytes(msg.data[4:6], byteorder='big')
                 message = "ARC:" + str(distance)+ ";"
-                print(message)
+               #print(message)
                 if distance < MySend.distanceDetectObstacleARC and distance > 0:
                     MySend.detectObstacleARC = True
                 elif distance == 0:
@@ -329,7 +329,7 @@ class MySend(Thread):
 
 if __name__ == "__main__":
     
-    print('Bring up CAN0....')
+   #print('Bring up CAN0....')
     os.system("sudo /sbin/ip link set can0 down")
     os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
     time.sleep(0.1)
@@ -337,7 +337,7 @@ if __name__ == "__main__":
     try:
         bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
     except OSError:
-        print('Cannot find PiCAN board.')
+       #print('Cannot find PiCAN board.')
         exit()
 
 
@@ -369,9 +369,9 @@ if __name__ == "__main__":
 
     VOL_CENTRE = int((VOL_GAUCHE+VOL_DROIT)/2)
 
-    print(VOL_DROIT)
-    print(VOL_GAUCHE)
-    print(VOL_CENTRE)
+   print(VOL_DROIT)
+   print(VOL_GAUCHE)
+   print(VOL_CENTRE)
 
 
     newsend = MySend(bus)
