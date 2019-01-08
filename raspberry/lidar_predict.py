@@ -84,7 +84,11 @@ class Lidar(Thread):
           if(leafCounterstop>=2):
               print("on doit stop")
               Lidar.leafStop=1
-              self.stooop()
+              self.shutdown_flag.set()
+              time.sleep(5)
+              self.lidar.stop()
+              self.lidar.stop_motor()
+              self.lidar.disconnect()
 
           
           '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
@@ -103,18 +107,13 @@ lidar = RPLidar('/dev/ttyUSB0')
 threadLidar=Lidar(lidar)
 
 
-
-def stooop():
+def signal_handler(sig, frame):
+  print('You pressed Ctrl+C!')
   threadLidar.shutdown_flag.set()
   time.sleep(5)
   lidar.stop()
   lidar.stop_motor()
   lidar.disconnect()
-  
-def signal_handler(sig, frame):
-  print('You pressed Ctrl+C!')
-  self.stooop()
-
 
 if __name__ == "__main__":
   threadLidar.start()
