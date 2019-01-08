@@ -98,7 +98,7 @@ class Lidar(Thread):
 
 
 lidar = RPLidar('/dev/ttyUSB0')
-threadLidar=Lidar(lidar)
+threadLidar=Lidar(lidar,0)
 
 
 def signal_handler(sig, frame):
