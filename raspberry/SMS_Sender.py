@@ -43,7 +43,7 @@ class SMS_Sender:
 		self.ser.reset_input_buffer()
         
 		self.ser.write(bytes(message,"utf-8")+bytes(chr(26),"utf-8")+b'\r')
-		buffer = self.ser.read(10).decode("utf-8")
+		buffer = self.ser.read(100).decode("utf-8")
 		print(buffer)
 		self.ser.reset_input_buffer()
 
