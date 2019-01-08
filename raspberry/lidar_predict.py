@@ -84,11 +84,6 @@ class Lidar(Thread):
           if(leafCounterstop>=2):
               print("on doit stop")
               Lidar.leafStop=1
-              self.shutdown_flag.set()
-              time.sleep(5)
-              self.lidar.stop()
-              self.lidar.stop_motor()
-              self.lidar.disconnect()
 
           
           '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
