@@ -8,12 +8,12 @@ x_model = keras.Sequential([
         keras.layers.Dense(2, activation=tf.nn.softmax)
         ])
 
-checkpoint_path = "F:/studies/insa/projet/wine/cp.ckpt"
+
+checkpoint_path = "/EasyLid/raspberry/tensorflow/wine/cp.ckpt"
 x_model.load_weights(checkpoint_path)
 
 x_model.summary()
 
-
-non_existing_test = np.loadtxt("F:/studies/insa/projet/wine/input/test/test.csv",dtype=np.float, delimiter=",")
+#non_existing_test = np.loadtxt(path+"input/test/test.csv",dtype=np.float, delimiter=",")
 
 x_predictions = x_model.predict(non_existing_test)

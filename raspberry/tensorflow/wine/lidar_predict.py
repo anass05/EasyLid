@@ -4,6 +4,9 @@ import sys
 import signal
 from threading import Thread
 import threading
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
 
 
 class Lidar(Thread):
@@ -24,6 +27,18 @@ class Lidar(Thread):
 
 
   def run(self):
+    x_model = keras.Sequential([
+        keras.layers.Flatten(input_shape=(360,)),
+        keras.layers.Dense(128, activation=tf.nn.relu),
+        keras.layers.Dense(2, activation=tf.nn.softmax)
+    ])
+
+
+    checkpoint_path = "/EasyLid/raspberry/tensorflow/wine/cp.ckpt"
+    x_model.load_weights(checkpoint_path)
+    
+    x_model.summary()
+
     info = self.lidar.get_info()
     print(info)
     health = self.lidar.get_health()
@@ -47,8 +62,15 @@ class Lidar(Thread):
           
           for x in scan:
             lidarTab[int(x[1])]=x[2]
-            
-            
+        
+          non_existing_test = np.array([lidarTab])
+          x_predictions = x_model.predict(non_existing_test)
+          if x_predictions.argmax() == 0:
+              print("normal")
+          else:
+              print("leaf")
+          
+          
           '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
           #outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
           outputFile.write('\n')
