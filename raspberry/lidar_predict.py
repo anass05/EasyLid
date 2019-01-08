@@ -80,6 +80,7 @@ class Lidar(Thread):
               leafcounter+= 1
               leafCounterstop+=1
           if(leafCounterstop>=3):
+              print("on doit stop")
               global leafStop
               leafStop=1
 
