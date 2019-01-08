@@ -11,6 +11,8 @@ from tensorflow import keras
 
 
 class Lidar(Thread):
+  global leafStop
+
   def __init__(self, lidar):
     Thread.__init__(self)
     self.shutdown_flag = threading.Event()

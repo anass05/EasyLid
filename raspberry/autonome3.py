@@ -18,7 +18,6 @@ US1 = 0x000
 US2 = 0x001
 OM1 = 0x101
 OM2 = 0x102
-global leafStop
 VOL_GAUCHE=0
 VOL_DROIT=0
 VOL_CENTRE=0
@@ -91,7 +90,6 @@ class MySend(Thread):
 
     lastActionD = True
     lastActionG = False
-    global leafStop
 
     # distance max
     # avant voiture
