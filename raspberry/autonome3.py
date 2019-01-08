@@ -23,7 +23,6 @@ VOL_GAUCHE=0
 VOL_DROIT=0
 VOL_CENTRE=0
 
-
 '''
     Messages envoyés :
     - ultrason avant gauche
