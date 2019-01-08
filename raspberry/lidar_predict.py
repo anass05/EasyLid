@@ -54,7 +54,7 @@ class Lidar(Thread):
     leafCounterstop = 0
     for i, scan in enumerate(self.lidar.iter_scans()):
       counter += 1
-      if self.shutdown_flag.is_set():
+      if self.shutdown_flag.is_set() or Lidar.leafStop == 1:
         print('please wait, lidar is shuting down')
         print(normalcounter)
         print(leafcounter)
@@ -84,6 +84,11 @@ class Lidar(Thread):
           if(leafCounterstop>=2):
               print("on doit stop")
               Lidar.leafStop=1
+              print('You pressed Ctrl+C!')
+              time.sleep(5)
+              self.lidar.stop()
+              self.lidar.stop_motor()
+              self.lidar.disconnect()
 
           
           '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
