@@ -81,9 +81,10 @@ class Lidar(Thread):
               print("leaf")
               leafcounter+= 1
               leafCounterstop+=1
-          if(leafCounterstop>=3):
+          if(leafCounterstop>=2):
               print("on doit stop")
               Lidar.leafStop=1
+              self.shutdown_flag.set()
 
           
           '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
