@@ -11,11 +11,10 @@ from tensorflow import keras
 
 
 class Lidar(Thread):
-  def __init__(self, lidar, leafStop):
+  def __init__(self, lidar):
     Thread.__init__(self)
     self.shutdown_flag = threading.Event()
     self.lidar=lidar
-    self.leafStop = leafStop
     print(str(len(sys.argv)))
     if len(sys.argv)==1:
       self.type='outputs/normal'
@@ -82,7 +81,7 @@ class Lidar(Thread):
               leafCounterstop+=1
           if(leafCounterstop>=3):
               print("on doit stop")
-              self.leafStop=1
+              leafStop=1
 
           
           '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
@@ -98,7 +97,7 @@ class Lidar(Thread):
 
 
 lidar = RPLidar('/dev/ttyUSB0')
-threadLidar=Lidar(lidar,0)
+threadLidar=Lidar(lidar)
 
 
 def signal_handler(sig, frame):

@@ -16,13 +16,14 @@ from autonome3 import MySend
 
 HOST = ''                # Symbolic name meaning all available interfaces
 PORT = 6666              # Arbitrary non-privileged port
-leafStop=0
+
 MCM = 0x010
 MS = 0x100
 US1 = 0x000
 US2 = 0x001
 OM1 = 0x101
 OM2 = 0x102
+leafStop = 0
 VOL_GAUCHE=0
 VOL_DROIT=0
 VOL_CENTRE=0
@@ -38,8 +39,8 @@ except OSError:
     print('Cannot find PiCAN board.')
     exit()
 lidar = RPLidar('/dev/ttyUSB0')
-threadLidar=Lidar(lidar, leafStop)
-newsend = MySend(bus, leafStop)
+threadLidar=Lidar(lidar)
+newsend = MySend(bus)
 
 def signal_handler(sig, frame):
   print('You pressed Ctrl+C!')
