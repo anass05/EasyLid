@@ -7,7 +7,7 @@ import can
 import os
 import struct
 import threading
-from lidar_predict import leafStop
+from lidar_predict import Lidar
 
 
 HOST = ''                # Symbolic name meaning all available interfaces
@@ -316,7 +316,7 @@ class MySend(Thread):
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
-            if leafStop==1:
+            if Lidar.leafStop==1:
                 print("ARRET")
                 msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
             else:
