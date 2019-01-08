@@ -18,6 +18,7 @@ US1 = 0x000
 US2 = 0x001
 OM1 = 0x101
 OM2 = 0x102
+global leafStop
 VOL_GAUCHE=0
 VOL_DROIT=0
 VOL_CENTRE=0
@@ -315,7 +316,6 @@ class MySend(Thread):
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
-            global leafStop
             if leafStop==1:
                 print("ARRET")
                 msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
