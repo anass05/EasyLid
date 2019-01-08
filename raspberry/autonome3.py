@@ -7,6 +7,7 @@ import can
 import os
 import struct
 import threading
+from lidar_predict import leafStop
 
 
 HOST = ''                # Symbolic name meaning all available interfaces
