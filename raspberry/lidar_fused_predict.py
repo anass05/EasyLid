@@ -16,7 +16,7 @@ from autonome3 import MySend
 
 HOST = ''                # Symbolic name meaning all available interfaces
 PORT = 6666              # Arbitrary non-privileged port
-
+leafStop=0
 MCM = 0x010
 MS = 0x100
 US1 = 0x000
