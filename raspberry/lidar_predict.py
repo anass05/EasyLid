@@ -49,7 +49,7 @@ class Lidar(Thread):
     counter = 0
     normalcounter = 0
     leafcounter = 0
-    leafCounterstop
+    leafCounterstop = 0
     for i, scan in enumerate(self.lidar.iter_scans()):
       counter += 1
       if self.shutdown_flag.is_set():
