@@ -9,6 +9,7 @@ import tensorflow as tf
 from tensorflow import keras
 
 
+
 class Lidar(Thread):
   def __init__(self, lidar):
     Thread.__init__(self)
@@ -48,6 +49,7 @@ class Lidar(Thread):
     counter = 0
     normalcounter = 0
     leafcounter = 0
+    leafCounterstop
     for i, scan in enumerate(self.lidar.iter_scans()):
       counter += 1
       if self.shutdown_flag.is_set():
@@ -72,9 +74,15 @@ class Lidar(Thread):
           if x_predictions.argmax() == 0:
               print("normal")
               normalcounter+= 1
+              leafCounterstop = 0
           else:
               print("leaf")
               leafcounter+= 1
+              leafCounterstop+=1
+          if(leafCounterstop>=3):
+              global leafStop
+              leafStop=1
+
           
           '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
           #outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
