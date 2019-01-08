@@ -318,6 +318,7 @@ class MySend(Thread):
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
             if Lidar.leafStop==1:
                 msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
+                self._is_running = False
             else:
                 msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
