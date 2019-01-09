@@ -58,6 +58,7 @@ class Lidar(Thread):
         rate=normalcounter/(normalcounter+leafcounter)
         print("normal situations = "+str(normalcounter))
         print("leaf situations = "+str(leafcounter))
+        print("accuracy = "+str(normalcounter)+"/"+str(normalcounter+leafcounter))
         print("accuracy = "+str(rate*100)+"%")
         break
       else:
