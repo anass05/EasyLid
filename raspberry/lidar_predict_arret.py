@@ -51,7 +51,6 @@ class Lidar(Thread):
     counter = 0
     normalcounter = 0.0
     leafcounter = 0.0
-    leafCounterstop = 0
     for i, scan in enumerate(self.lidar.iter_scans()):
       counter += 1
       if self.shutdown_flag.is_set():
@@ -78,14 +77,10 @@ class Lidar(Thread):
           if x_predictions.argmax() == 0:
               print("normal")
               normalcounter+= 1
-              leafCounterstop = 0
           else:
               print("leaf")
               leafcounter+= 1
-              leafCounterstop+=1
-          if(leafCounterstop>=2):
-              print("on doit stop")
-              Lidar.leafStop=1
+              
 
           
           '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
