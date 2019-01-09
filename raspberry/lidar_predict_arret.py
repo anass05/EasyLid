@@ -56,9 +56,9 @@ class Lidar(Thread):
       if self.shutdown_flag.is_set():
         print('please wait, lidar is shuting down')
         rate=normalcounter/(normalcounter+leafcounter)
-        print(normalcounter)
-        print(leafcounter)
-        print(rate)
+        print("normal situations = "+str(normalcounter))
+        print("leaf situations = "+str(leafcounter))
+        print("accuracy = "+str(rate*100)+"%")
         break
       else:
        # print('%d: Got %d measurments' % (i, len(scan)))
