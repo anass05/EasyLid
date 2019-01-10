@@ -113,7 +113,7 @@ class MySend(Thread):
         self.shutdown_flag = threading.Event()
 
     def run(self):
-        sms = SMS_Sender("0000")
+ #       sms = SMS_Sender("0000")
         self.speed_cmd = 30
         self.move = 0
         self.turn = 0
@@ -320,8 +320,8 @@ class MySend(Thread):
             if Lidar.leafStop==1:
                 msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
                 self.bus.send(msg)
-                sms.send("+33781565844", "Oh no, there's a leaf on the LiDAR!")
-                del sms
+#               sms.send("+33781565844", "Oh no, there's a leaf on the LiDAR!")
+#               del sms
                 sys.exit()
             else:
                 msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
