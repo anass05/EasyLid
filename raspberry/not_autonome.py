@@ -317,7 +317,7 @@ class MySend(Thread):
                 del sms
                 sys.exit()
             else:'''
-            time.sleep(0.009)
+            time.sleep(0.09)
             msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
             self.bus.send(msg)
 
