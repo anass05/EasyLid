@@ -8,7 +8,7 @@ import os
 import threading
 from lidar_predict import Lidar
 from SMS_Sender import SMS_Sender
-from msvcrt import getwch
+import readchar
 
 
 HOST = ''                # Symbolic name meaning all available interfaces
@@ -39,7 +39,7 @@ class KEK(Thread):
         global key
         global hasClicked
         while not(self.shutdown_flag.is_set()):
-            key = getwch()
+            key = repr(readchar.readchar())
             hasClicked = True
 
 
@@ -218,7 +218,7 @@ class MySend(Thread):
             # detection obstacle proche dans ce cas on s'arrête
             global hasClicked
             global key
-            if key==' ' and hasClicked:
+            if key=="b' '" and hasClicked:
                 print(key)
                 print('brake')
                 self.move = 0
@@ -228,7 +228,7 @@ class MySend(Thread):
                 hasClicked = False
 
             # cul de sac -> reculer
-            elif key=='P' and hasClicked:
+            elif key=="b's'" and hasClicked:
                 print('down')
                 self.move = -1
                 self.enable = 1
@@ -237,7 +237,7 @@ class MySend(Thread):
                 hasClicked = False
 
             # tourner a droite
-            elif key=='M' and hasClicked:
+            elif key=="b'd'" and hasClicked:
                 print('right')
                 self.move = 1
                 self.enable = 1
@@ -251,7 +251,7 @@ class MySend(Thread):
                     self.turn = 0
                     
             #tourner à gauche
-            elif key=='K' and hasClicked:
+            elif key=="b'q'" and hasClicked:
                 print('left')
                 self.move = 1
                 self.enable = 1
@@ -265,7 +265,7 @@ class MySend(Thread):
                 hasClicked = False
                                     
             # si pas d'obstacle on va tout droit
-            elif key=='K' and hasClicked:
+            elif key=="b'z'" and hasClicked:
                 print('straight')
                 self.move = 1
                 self.enable = 1
