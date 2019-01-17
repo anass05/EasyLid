@@ -22,6 +22,7 @@ class Lidar(Thread):
       self.type='outputs/normal'
       self.size=25
     elif len(sys.argv)==2:
+
       self.type='outputs/'+str(sys.argv[1])
       self.size=25
     else:
@@ -75,11 +76,18 @@ class Lidar(Thread):
         
           non_existing_test = np.array([lidarTab])
           x_predictions = x_model.predict(non_existing_test)
+          #normal = 0 mirror = 1 feuille = 2 feuilleLoin = 3
           if x_predictions.argmax() == 0:
               print("normal")
               normalcounter+= 1
-          else:
+          elif x_predictions.argmax() == 1:
+              print("mirror")
+              leafcounter+= 1
+          elif x_predictions.argmax() == 2:
               print("leaf")
+              leafcounter+= 1
+          elif x_predictions.argmax() == 3:
+              print("weird leaf ")
               leafcounter+= 1
               
 
