@@ -87,7 +87,7 @@ class Lidar(Thread):
               print("leaf")
               leafcounter+= 1
           elif x_predictions.argmax() == 3:
-              print("weird leaf ")
+              print("weird leaf")
               leafcounter+= 1
               
 
