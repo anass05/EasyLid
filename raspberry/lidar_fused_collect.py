@@ -11,8 +11,8 @@ import threading
 import can
 import os
 import struct
-from lidar_light import Lidar
-from autonome3 import MySend
+from lidar_collect import Lidar
+from autonomeCollect import MySend
 
 HOST = ''                # Symbolic name meaning all available interfaces
 PORT = 6666              # Arbitrary non-privileged port
@@ -55,7 +55,7 @@ def signal_handler(sig, frame):
 if __name__ == "__main__":
     
 
-    #gauche
+    #seuil gauche du volant
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     time.sleep(0.75)
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
 
-    #droit
+    #seuil droit du volant
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     time.sleep(0.75)
@@ -81,6 +81,7 @@ if __name__ == "__main__":
         msg2=bus.recv()
     VOL_DROIT = int.from_bytes(msg2.data[0:2], byteorder='big')
 
+    #calcul seuil centre
     VOL_CENTRE = int((VOL_GAUCHE+VOL_DROIT)/2)
 
     print(VOL_DROIT)
