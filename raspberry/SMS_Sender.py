@@ -7,6 +7,7 @@ class SMS_Sender:
 		self.pin=pin
 		
 		#Initialise la communication série avec le module SMS
+		#/dev/SMS est un raccourci vers le port USB du module SMS, cela est parametré dans un fichier .rules de /etc/udev/
 		#Baudrate = 115200
 		#Control de flux hardware activé
 		self.ser = serial.Serial('/dev/SMS',115200,rtscts=True,timeout=2)
