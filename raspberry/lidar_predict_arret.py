@@ -66,6 +66,10 @@ class Lidar(Thread):
             lidarTab[int(x[1])]=x[2]
         #get the 360 point and put them in a numpy array
           non_existing_test = np.array([lidarTab])
+
+          train_max = non_existing_test.max()
+          non_existing_test /= train_max
+          
           x_predictions = x_model.predict(non_existing_test)
           #normal = 0 mirror = 1 feuille = 2 feuilleLoin = 3
           if x_predictions.argmax() == 0:
