@@ -17,17 +17,6 @@ class Lidar(Thread):
     Thread.__init__(self)
     self.shutdown_flag = threading.Event()
     self.lidar=lidar
-    print(str(len(sys.argv)))
-    if len(sys.argv)==1:
-      self.type='outputs/normal'
-      self.size=25
-    elif len(sys.argv)==2:
-      self.type='outputs/'+str(sys.argv[1])
-      self.size=25
-    else:
-      self.type='outputs/'+str(sys.argv[1])
-      self.size=int(str(sys.argv[2]))
-
 
   def run(self):
     x_model = keras.Sequential([
@@ -62,11 +51,8 @@ class Lidar(Thread):
         print(rate)
         break
       else:
-       # print('%d: Got %d measurments' % (i, len(scan)))
-       # print('Ultrason %d' % (ULT_AG))
         if counter > 2:
           lidarTab = []
-          #print("saving")
           for i in range(360):
             lidarTab.append(0)
           
@@ -90,32 +76,3 @@ class Lidar(Thread):
               self.lidar.stop()
               self.lidar.stop_motor()
 
-          
-          '''outputFile.write(''.join(str(x)+', ' for x in lidarTab))
-          #outputFile.write('(%d, %d, %d, %d, %d, %d)'%(ULT_AG,ULT_AD,ULT_AC,ULT_DG,ULT_DD,ULT_DC))
-          outputFile.write('\n')
-          savedTurns += 1
-          if savedTurns >= self.size:
-            outputFile.close()
-            fileName=time.strftime("%d%m%Y%H%M%S")
-            savedTurns=0
-            outputFile = open(self.type+'/'+fileName,'w')
-            print("saved")'''
-
-
-lidar = RPLidar('/dev/LIDAR')
-threadLidar=Lidar(lidar)
-
-
-def signal_handler(sig, frame):
-  print('You pressed Ctrl+C!')
-  threadLidar.shutdown_flag.set()
-  time.sleep(5)
-  lidar.stop()
-  lidar.stop_motor()
-  lidar.disconnect()
-
-if __name__ == "__main__":
-  threadLidar.start()
-  signal.signal(signal.SIGINT, signal_handler)
-  threadLidar.join()

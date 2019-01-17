@@ -6,13 +6,12 @@ import signal
 from threading import Thread
 import threading
 
-#Can imports
-#sys.path.insert(0,'../../can')
+
 import can
 import os
 import struct
 from lidar_predict import Lidar
-from autonome3 import MySend
+from autonomePredict import MySend
 
 HOST = ''                # Symbolic name meaning all available interfaces
 PORT = 6666              # Arbitrary non-privileged port
@@ -27,6 +26,7 @@ leafStop = 0
 VOL_GAUCHE=0
 VOL_DROIT=0
 VOL_CENTRE=0
+#initialiser le can avec les bons parametres
 print('Bring up CAN0....')
 os.system("sudo /sbin/ip link set can0 down")
 os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
@@ -41,7 +41,7 @@ except OSError:
 lidar = RPLidar('/dev/LIDAR')
 threadLidar=Lidar(lidar)
 newsend = MySend(bus)
-
+#fonction d'arrêt des threads
 def signal_handler(sig, frame):
   print('You pressed Ctrl+C!')
   threadLidar.shutdown_flag.set()
@@ -55,7 +55,7 @@ def signal_handler(sig, frame):
 if __name__ == "__main__":
     
 
-    #gauche
+    #seuil gauche du volant
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0xE4,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     time.sleep(0.75)
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
 
-    #droit
+    #seuil droit du volant
     msg = can.Message(arbitration_id=MCM,data=[0, 0, 0x80,0,0,0,0,0],extended_id=False)
     bus.send(msg)
     time.sleep(0.75)
@@ -80,6 +80,8 @@ if __name__ == "__main__":
     while not(msg2.arbitration_id == MS):
         msg2=bus.recv()
     VOL_DROIT = int.from_bytes(msg2.data[0:2], byteorder='big')
+
+    #calcul seuil centre
 
     VOL_CENTRE = int((VOL_GAUCHE+VOL_DROIT)/2)
 

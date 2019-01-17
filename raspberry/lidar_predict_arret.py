@@ -19,17 +19,6 @@ class Lidar(Thread):
     Thread.__init__(self)
     self.shutdown_flag = threading.Event()
     self.lidar=lidar
-    print(str(len(sys.argv)))
-    if len(sys.argv)==1:
-      self.type='outputs/normal'
-      self.size=25
-    elif len(sys.argv)==2:
-
-      self.type='outputs/'+str(sys.argv[1])
-      self.size=25
-    else:
-      self.type='outputs/'+str(sys.argv[1])
-      self.size=int(str(sys.argv[2]))
 
 #initialise the model, it must be the same as the model you trained it with... obviously
   def run(self):
@@ -67,12 +56,9 @@ class Lidar(Thread):
         print("accuracy = "+str(rate*100)+"%")
         break
       else:
-       # print('%d: Got %d measurments' % (i, len(scan)))
-       # print('Ultrason %d' % (ULT_AG))
        #we skip the 2 first revolution cause they are usualy wrong as the LiDAR's motor didn't acheive it's optimal speed
         if counter > 2:
           lidarTab = []
-          #print("saving")
           for i in range(360):
             lidarTab.append(0)
           

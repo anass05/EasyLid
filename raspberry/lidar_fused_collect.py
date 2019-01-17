@@ -6,8 +6,7 @@ import signal
 from threading import Thread
 import threading
 
-#Can imports
-#sys.path.insert(0,'../../can')
+
 import can
 import os
 import struct
@@ -27,6 +26,7 @@ OM2 = 0x102
 VOL_GAUCHE=0
 VOL_DROIT=0
 VOL_CENTRE=0
+#initialiser le can avec les bons parametres
 print('Bring up CAN0....')
 os.system("sudo /sbin/ip link set can0 down")
 os.system("sudo /sbin/ip link set can0 up type can bitrate 400000")
@@ -41,7 +41,7 @@ except OSError:
 lidar = RPLidar('/dev/ttyUSB0')
 threadLidar=Lidar(lidar)
 newsend = MySend(bus)
-
+#fonction d'arrêt des threads
 def signal_handler(sig, frame):
   print('You pressed Ctrl+C!')
   threadLidar.shutdown_flag.set()
