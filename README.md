@@ -1,4 +1,4 @@
-# EasyLid 
+# EasyLid ![Logo Easylid](images/dumb-logo.jpg)
 
 EasyLid is one of the projects carried out by students at [INSA Toulouse](http://www.insa-toulouse.fr/fr/index.html). Projects consist in developing the software of a autonomous car in order to carry out different missions. 
 
