@@ -5,10 +5,10 @@ from threading import Thread
 import time
 import can
 import os
+import struct
 import threading
 from lidar_predict import Lidar
 from SMS_Sender import SMS_Sender
-import readchar
 
 
 HOST = ''                # Symbolic name meaning all available interfaces
@@ -23,32 +23,51 @@ OM2 = 0x102
 VOL_GAUCHE=0
 VOL_DROIT=0
 VOL_CENTRE=0
-global  key
-key = "lol"
-global hasClicked
-hasClicked = False
 
-
-
-class KEK(Thread):
-    def __init__(self):
-        Thread.__init__(self)
-        self.shutdown_flag = threading.Event()
-
-    def run(self):
-        global key
-        global hasClicked
-        while not(self.shutdown_flag.is_set()):
-            key = repr(readchar.readchar())
-            hasClicked = True
-
+'''
+    Messages envoyés :
+    - ultrason avant gauche
+    header : UFL payload : entier, distance en cm
+    - ultrason avant centre
+    header : UFC payload : entier, distance en cm
+    - ultrason avant droite
+    header : UFR payload : entier, distance en cm
+    - ultrason arriere gauche
+    header : URL payload : entier, distance en cm
+    - ultrason arriere centre
+    header : URC payload : entier, distance en cm
+    - ultrason arriere droite
+    header : URR payload : entier, distance en cm
+    - position volant
+    header : POS payload : entier, valeur brute du capteur
+    - vitesse roue gauche
+    header : SWL payload : entier, *0.01rpm
+    - vitesse roue droite
+    header : SWR payload : entier, *0.01rpm
+    - Niveau de la batterie
+    header : BAT payload : entier, mV
+    - Pitch
+    header : PIT payload : float, angle en degrée
+    - Yaw
+    header : YAW payload : float, angle en degrée
+    - Roll
+    header : ROL payload : float, angle en degrée
+    
+    Messages reçus :
+    - Modification de la vitesse
+    header : SPE payload : valeur entre 0 et 50
+    - Control du volant (droite, gauche)
+    header : STE paylaod : left | right | stop
+    - Contra l de l'avancée
+    header : MOV payload : forward | backward | stop
+    '''
 
 class MySend(Thread):
 
 
     # boolean 
     # avant voiture
-    '''detectObstacleAVD = False
+    detectObstacleAVD = False
     detectObstacleAVDold = False
     detectObstacleAVG = False
     detectObstacleAVGold = False
@@ -67,7 +86,7 @@ class MySend(Thread):
     detectObstacleARGprocheold = False
     detectObstacleARC = False
     detectObstacleARCold = False
-    '''
+    
     differentielD = False
     differentielG = False
 
@@ -76,7 +95,7 @@ class MySend(Thread):
 
     # distance max
     # avant voiture
-    '''distanceDetectObstacleAVD = 30
+    distanceDetectObstacleAVD = 30
     distanceDetectObstacleAVG = 30
     distanceDetectObstacleAVC = 150
     distanceDetectObstacleAVCproche = 30
@@ -86,7 +105,7 @@ class MySend(Thread):
     distanceDetectObstacleARG = 75
     distanceDetectObstacleARGproche = 20
     distanceDetectObstacleARC = 30
-'''
+
     
     def __init__(self, bus):
         Thread.__init__(self)
@@ -94,22 +113,23 @@ class MySend(Thread):
         self.shutdown_flag = threading.Event()
 
     def run(self):
-      #  sms = SMS_Sender("0000")
+ #       sms = SMS_Sender("0000")
         self.speed_cmd = 30
         self.move = 0
         self.turn = 0
         self.enable = 0
+        
         while not(self.shutdown_flag.is_set()):
+            
             msg = self.bus.recv()
             
             # #print(msg.arbitration_id, msg.data)
             # print("Reading")
             
-            #st = ""
+            st = ""
             
             #------------------------------------------------- LECTURE MESSAGE ----------------------------------------------------
             #000
-            '''
             if msg.arbitration_id == US1:
                 
                 # ultrason avant gauche
@@ -196,13 +216,13 @@ class MySend(Thread):
                     None
                 else:
                     MySend.detectObstacleARC = False       
-            #100 '''
-            if msg.arbitration_id == MS:
+            #100 
+            elif msg.arbitration_id == MS:
                 # position volant
                 position_volant = int.from_bytes(msg.data[0:2], byteorder='big')
-                #message = "POS:" + str(position_volant)+ ";"
+                message = "POS:" + str(position_volant)+ ";"
                 ##print(message)
-            '''
+
             #------------------------------------------------- DETECTION OBSTACLE ----------------------------------------------------
             AVGOK = MySend.detectObstacleAVGold == MySend.detectObstacleAVG
             AVDOK = MySend.detectObstacleAVDold == MySend.detectObstacleAVD
@@ -214,45 +234,35 @@ class MySend(Thread):
             ARDprocheOK = MySend.detectObstacleARDprocheold == MySend.detectObstacleARDproche
             ARCOK = MySend.detectObstacleARCold == MySend.detectObstacleARC
 
-            '''
+            
             # detection obstacle proche dans ce cas on s'arrête
-            global hasClicked
-            global key
-            if key=="b' '" and hasClicked:
-                print(key)
-                print('brake')
+            if (MySend.detectObstacleAVG and AVGOK) or (MySend.detectObstacleAVD and AVDOK) or (MySend.detectObstacleAVCproche and AVCprocheOK) or (MySend.detectObstacleARGproche and ARGprocheOK) or (MySend.detectObstacleARDproche and ARDprocheOK) or (MySend.detectObstacleARC and ARCOK):
                 self.move = 0
                 self.enable = 0
                 MySend.differentielD = False
                 MySend.differentielG = False
-                hasClicked = False
 
             # cul de sac -> reculer
-            elif key=="b's'" and hasClicked:
-                print('down')
+            elif (MySend.detectObstacleAVC and AVCOK) and (MySend.detectObstacleARG and ARGOK) and (MySend.detectObstacleARD and ARDOK):
                 self.move = -1
                 self.enable = 1
                 MySend.differentielD = False
                 MySend.differentielG = False
-                hasClicked = False
 
             # tourner a droite
-            elif key=="b'd'" and hasClicked:
-                print('right')
+            elif (MySend.detectObstacleAVC and AVCOK and ((MySend.detectObstacleARG and ARGOK) or (MySend.lastActionD and not(MySend.detectObstacleARD) and ARDOK))):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielD = True
                 MySend.lastActionD = True
                 MySend.lastActionG = False
-                hasClicked = False
                 if (position_volant < VOL_DROIT-50):
                     self.turn = -1
                 else:
                     self.turn = 0
                     
             #tourner à gauche
-            elif key=="b'q'" and hasClicked:
-                print('left')
+            elif (MySend.detectObstacleAVC and AVCOK and ((MySend.detectObstacleARD and ARDOK) or (MySend.lastActionG and not(MySend.detectObstacleARG) and ARGOK))):
                 self.move = 1
                 self.enable = 1
                 MySend.differentielG = True
@@ -262,11 +272,9 @@ class MySend(Thread):
                     self.turn = 1
                 else:
                     self.turn = 0
-                hasClicked = False
                                     
             # si pas d'obstacle on va tout droit
-            elif key=="b'z'" and hasClicked:
-                print('straight')
+            else:
                 self.move = 1
                 self.enable = 1
                 MySend.differentielD = False
@@ -278,8 +286,7 @@ class MySend(Thread):
                     self.turn = -1
                 else:
                     self.turn = 0
-                hasClicked = False
-            '''
+                    
             MySend.detectObstacleAVCold = MySend.detectObstacleAVC #pour l'instant on regarde que les obstacles en face
             MySend.detectObstacleAVDold = MySend.detectObstacleAVD
             MySend.detectObstacleAVGold = MySend.detectObstacleAVG
@@ -289,7 +296,7 @@ class MySend(Thread):
             MySend.detectObstacleARGold = MySend.detectObstacleARG
             MySend.detectObstacleARGprocheold = MySend.detectObstacleARGproche
             MySend.detectObstacleARCold = MySend.detectObstacleARC
-            '''
+            
             #------------------------------------------------- CALCUL COMMANDES ----------------------------------------------------
             
             if self.enable:
@@ -310,16 +317,15 @@ class MySend(Thread):
                 cmd_mv_gauche = (50 + self.move*self.speed_cmd) & ~0x80
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
-            '''if Lidar.leafStop==1:
+            if Lidar.leafStop==1:
                 msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
                 self.bus.send(msg)
-                sms.send("+33781565844", "Oh no, there's a leaf on the LiDAR!")
-                del sms
+#               sms.send("+33781565844", "Oh no, there's a leaf on the LiDAR!")
+#               del sms
                 sys.exit()
-            else:'''
-            time.sleep(0.09)
-            msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
-            self.bus.send(msg)
+            else:
+                msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
+                self.bus.send(msg)
 
 
 
@@ -376,9 +382,6 @@ if __name__ == "__main__":
 
     newsend = MySend(bus)
     newsend.start()
-    
-    kek = KEK()
-    kek.start()
 
     newsend.join()
 
