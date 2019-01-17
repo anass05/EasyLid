@@ -73,16 +73,16 @@ class Lidar(Thread):
           x_predictions = x_model.predict(non_existing_test)
           #normal = 0 mirror = 1 feuille = 2 feuilleLoin = 3
           if x_predictions.argmax() == 0:
-              print("normal")
+              print("normal "+x_predictions.max())
               normalcounter+= 1
           elif x_predictions.argmax() == 1:
-              print("mirror")
+              print("mirror "+x_predictions.max())
               leafcounter+= 1
           elif x_predictions.argmax() == 2:
-              print("leaf")
+              print("leaf "+x_predictions.max())
               leafcounter+= 1
           elif x_predictions.argmax() == 3:
-              print("weird leaf")
+              print("weird leaf "+x_predictions.max())
               leafcounter+= 1
 
 #Change variable LIDAR with ttyUSB0
