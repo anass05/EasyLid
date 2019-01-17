@@ -1,6 +1,5 @@
-# EasyLid 
+# EasyLid ![Logo Easylid](images/dumb-logo.png)
 
-![Logo Easylid](images/dumb-logo.jpg)
 EasyLid is one of the projects carried out by students at [INSA Toulouse](http://www.insa-toulouse.fr/fr/index.html). Projects consist in developing the software of a autonomous car in order to carry out different missions. 
 
 The autonomous vehicle is a rapidly developing technology, and raises many issues concerning security. Self-driving cars use a wide range of sensors to estimate their position and detect obstacles, such as LiDAR. However, these sensors are not always reliable and may provide incorrect data to the car, and can result with the car taking a hazardous decision. The main goal of our project is to detect the occurrence of an anomaly on the LiDAR, installed in our autonomous car on a RaspberryPi, a credit-card sized computer, using a deep learning algorithm. Easymile, promising start-up from Toulouse is supporting us throughout the project. 
