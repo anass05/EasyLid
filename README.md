@@ -19,9 +19,9 @@ This project is surpervised by:
 * CHANTHERY Elodie
 * HLADIK Pierre-Emmanuel
 * GAUDEL Quentin (Easymile)
+* LESUR Thibault (Activus Services)
 
-
-Several projects are exposed on the [official website] (https://sites.google.com/site/projetsecinsa/). Link to our project website : (https://sites.google.com/site/projetsecinsa/projets-2018-2019/project-tokyo)
+Several projects are exposed on the [official website](https://sites.google.com/site/projetsecinsa/). Link to our project website : [EasyLid](https://sites.google.com/site/projetsecinsa/projets-2018-2019/project-tokyo)
 
 The platform is (or was) developped and maintained by :
 
