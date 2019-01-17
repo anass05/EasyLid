@@ -22,6 +22,8 @@ This project is surpervised by:
 
 Several projects are exposed on the [official website](https://sites.google.com/site/projetsecinsa/). Link to our project website : [EasyLid](https://sites.google.com/site/projetsecinsa/projets-2018-2019/project-tokyo)
 
+![Photo of our car](images/IMG_20190117_102241.jpg)
+
 The platform is (or was) developped and maintained by:
 
 * DI MERCURIO Sébastien
