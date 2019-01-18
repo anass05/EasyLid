@@ -24,9 +24,10 @@ class Lidar(Thread):
   def run(self):
     x_model = keras.Sequential([
         keras.layers.Flatten(input_shape=(360,)),
-        keras.layers.Dense(128, activation=tf.nn.relu),
+        keras.layers.Dense(180, activation=tf.nn.relu),
+        keras.layers.Dense(90, activation=tf.nn.relu),
         keras.layers.Dense(4, activation=tf.nn.softmax)
-    ])
+        ])
 
 #load the trained model
     checkpoint_path = "/EasyLid/raspberry/cp.ckpt"
