@@ -104,6 +104,7 @@ class MySend(Thread):
         self.move = 0
         self.turn = 0
         self.enable = 0
+        sms = SMS_Sender("0000")
         
         while not(self.shutdown_flag.is_set()):
             
@@ -298,8 +299,10 @@ class MySend(Thread):
             
             #------------------------------------------------- ENVOI MESSAGE CAN ----------------------------------------------------
             if Lidar.leafStop==1:
+                print('SENDING AN SMS')
                 msg = can.Message(arbitration_id=MCM,data=[0, 0, 0,0,0,0,0,0],extended_id=False)
                 self.bus.send(msg)
+                sms.send("+33781565844", "Oh no, there is a leaf on the LiDAR!")
                 sys.exit()
             else:
                 msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
