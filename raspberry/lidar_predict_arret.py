@@ -24,8 +24,7 @@ class Lidar(Thread):
   def run(self):
     x_model = keras.Sequential([
         keras.layers.Flatten(input_shape=(360,)),
-        keras.layers.Dense(180, activation=tf.nn.relu),
-        keras.layers.Dense(90, activation=tf.nn.relu),
+        keras.layers.Dense(128, activation=tf.nn.relu),
         keras.layers.Dense(4, activation=tf.nn.softmax)
         ])
 
@@ -77,13 +76,10 @@ class Lidar(Thread):
               print("normal "+str(x_predictions.max()))
               normalcounter+= 1
           elif x_predictions.argmax() == 1:
-              print("mirror "+str(x_predictions.max()))
-              leafcounter+= 1
-          elif x_predictions.argmax() == 2:
               print("leaf "+str(x_predictions.max()))
               leafcounter+= 1
-          elif x_predictions.argmax() == 3:
-              print("weird leaf "+str(x_predictions.max()))
+          elif x_predictions.argmax() == 2:
+              print("far leaf "+str(x_predictions.max()))
               leafcounter+= 1
 
 #Change variable LIDAR with ttyUSB0
