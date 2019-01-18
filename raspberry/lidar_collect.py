@@ -66,7 +66,7 @@ class Lidar(Thread):
           savedTurns += 1
           if savedTurns >= self.size:
             outputFile.close()
-            fileName=time.strftime("%d%m%Y%H%M%S")
+            fileName=time.strftime("%Y%m%d%H%M%S")
             savedTurns=0
             outputFile = open(self.type+'/'+fileName,'w')
             print("saved")
