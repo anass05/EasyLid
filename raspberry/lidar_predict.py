@@ -12,6 +12,7 @@ from tensorflow import keras
 
 class Lidar(Thread):
   leafStop=0
+  startDetection = False
 
   def __init__(self, lidar):
     Thread.__init__(self)
@@ -52,6 +53,7 @@ class Lidar(Thread):
         break
       else:
         if counter > 2:
+          Lidar.startDetection = True
           lidarTab = []
           for i in range(360):
             lidarTab.append(0)
@@ -66,7 +68,7 @@ class Lidar(Thread):
               normalcounter+= 1
               leafCounterstop = 0
           else:
-              #print("leaf")
+              print("leaf")
               leafcounter+= 1
               leafCounterstop+=1
           if(leafCounterstop>=2):

@@ -304,6 +304,6 @@ class MySend(Thread):
                 self.bus.send(msg)
                 sms.send("+33781565844", "Oh no, there is a leaf on the LiDAR!")
                 sys.exit()
-            else:
+            else if Lidar.startDetection:
                 msg = can.Message(arbitration_id=MCM,data=[cmd_mv_gauche, cmd_mv_droit, cmd_turn,0,0,0,0,0],extended_id=False)
                 self.bus.send(msg)
