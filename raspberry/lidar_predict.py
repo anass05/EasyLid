@@ -62,11 +62,11 @@ class Lidar(Thread):
           non_existing_test = np.array([lidarTab])
           x_predictions = x_model.predict(non_existing_test)
           if x_predictions.argmax() == 0:
-              print("normal")
+              #print("normal")
               normalcounter+= 1
               leafCounterstop = 0
           else:
-              print("leaf")
+              #print("leaf")
               leafcounter+= 1
               leafCounterstop+=1
           if(leafCounterstop>=4):
