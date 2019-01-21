@@ -69,7 +69,7 @@ class Lidar(Thread):
               print("leaf")
               leafcounter+= 1
               leafCounterstop+=1
-          if(leafCounterstop>=2):
+          if(leafCounterstop>=4):
               Lidar.leafStop=1
               print('You pressed Ctrl+C!')
               time.sleep(5)
