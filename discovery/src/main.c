@@ -236,6 +236,8 @@ int main(void)
         CAN_OMx_mes[i] = 0;
         CAN_AHRS_mes.buffer[i]=0;
     }
+    sprintf (bufferMsg, "at+cpin=\"0000\"",(int)eulerBuffer[0]);
+    HAL_UART_Transmit(&huart2, (uint8_t*)bufferMsg, strlen(bufferMsg), 1000);
 
     while (1)
     {
@@ -307,14 +309,14 @@ int main(void)
 
             getEulerAngles(eulerBuffer);
 
-            sprintf (bufferMsg, "Axe X(Pitch): %d\n\r",(int)eulerBuffer[0]);
-            HAL_UART_Transmit(&huart2, (uint8_t*)bufferMsg, strlen(bufferMsg), 1000);
-
-            sprintf (bufferMsg, "Axe Y(Roll): %d\n\r",(int)eulerBuffer[2]);
-            HAL_UART_Transmit(&huart2, (uint8_t*)bufferMsg, strlen(bufferMsg), 1000);
-
-            sprintf (bufferMsg, "Axe Z(Yaw): %d\n\r\n\r",(int)eulerBuffer[1]);
-            HAL_UART_Transmit(&huart2, (uint8_t*)bufferMsg, strlen(bufferMsg), 1000);
+//            sprintf (bufferMsg, "Axe X(Pitch): %d\n\r",(int)eulerBuffer[0]);
+//            HAL_UART_Transmit(&huart2, (uint8_t*)bufferMsg, strlen(bufferMsg), 1000);
+//
+//            sprintf (bufferMsg, "Axe Y(Roll): %d\n\r",(int)eulerBuffer[2]);
+//            HAL_UART_Transmit(&huart2, (uint8_t*)bufferMsg, strlen(bufferMsg), 1000);
+//
+//            sprintf (bufferMsg, "Axe Z(Yaw): %d\n\r\n\r",(int)eulerBuffer[1]);
+//            HAL_UART_Transmit(&huart2, (uint8_t*)bufferMsg, strlen(bufferMsg), 1000);
 
             CAN_AHRS_mes.val = eulerBuffer[0];
             //CAN_Send(CAN_AHRS_mes.buffer, CAN_AHRS_id_X);
@@ -655,7 +657,7 @@ static void MX_USART2_UART_Init(void)
     huart2.Init.StopBits = UART_STOPBITS_1;
     huart2.Init.Parity = UART_PARITY_NONE;
     huart2.Init.Mode = UART_MODE_TX_RX;
-    huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart2.Init.HwFlowCtl = UART_HWCONTROL_RTS_CTS
     huart2.Init.OverSampling = UART_OVERSAMPLING_16;
     huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
     huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
@@ -667,7 +669,7 @@ static void MX_USART2_UART_Init(void)
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
     /*Configure GPIO pins : USART2 TX */
-    GPIO_InitStruct.Pin = GPIO_PIN_2;
+    GPIO_InitStruct.Pin = GPIO_PIN_2 | GPIO_PIN_1;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -675,7 +677,7 @@ static void MX_USART2_UART_Init(void)
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /*Configure GPIO pins : USART2 RX */
-    GPIO_InitStruct.Pin = GPIO_PIN_3;
+    GPIO_InitStruct.Pin = GPIO_PIN_3 | GPIO_PIN_0;
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
