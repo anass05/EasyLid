@@ -22,7 +22,7 @@ class Lidar(Thread):
     x_model = keras.Sequential([
         keras.layers.Flatten(input_shape=(360,)),
         keras.layers.Dense(128, activation=tf.nn.relu),
-        keras.layers.Dense(4, activation=tf.nn.softmax)
+        keras.layers.Dense(3, activation=tf.nn.softmax)
         ])
 
 
